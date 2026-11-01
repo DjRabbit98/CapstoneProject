@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Primary Button: Filled -->
+    <style name="ButtonStyle.Primary" parent="Widget.Material3.Button">
+        <item name="android:textColor">@color/surface</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="cornerRadius">10dp</item>
+        <item name="backgroundTint">@color/colorPrimary</item>
+    </style>
+
+    <!-- Secondary Button: Outlined -->
+    <style name="ButtonStyle.Secondary" parent="Widget.Material3.Button.OutlinedButton">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="cornerRadius">10dp</item>
+        <item name="strokeColor">@color/colorPrimary</item>
+        <item name="strokeWidth">2dp</item>
+    </style>
+
+    <!-- Text Button: Destructive -->
+    <style name="ButtonStyle.Destructive" parent="Widget.Material3.Button.TextButton">
+        <item name="android:textColor">@color/error</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:minWidth">48dp</item>
+    </style>
+
+    <!-- Chip/Filter: Pill Shape -->
+    <style name="ChipStyle.Filter" parent="Widget.Material3.Chip.Filter">
+        <item name="cornerRadius">24dp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="chipBackgroundColor">@color/background</item>
+        <item name="chipStrokeColor">@color/colorPrimary</item>
+        <item name="chipStrokeWidth">1dp</item>
+    </style>
+
+    <style name="ChipStyle.Filter.Selected" parent="ChipStyle.Filter">
+        <item name="chipBackgroundColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/surface</item>
+    </style>
+
+</resources>

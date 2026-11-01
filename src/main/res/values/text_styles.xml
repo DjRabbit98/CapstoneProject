@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- display (24px bold, 1.3 line height) -->
+    <style name="TextDisplay">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lineSpacingMultiplier">1.3</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <!-- heading (18px semibold, 1.35 line height) -->
+    <style name="TextHeading">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lineSpacingMultiplier">1.35</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <!-- body (15px regular, 1.5 line height) -->
+    <style name="TextBody">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:lineSpacingMultiplier">1.5</item>
+        <item name="android:textColor">@color/text_primary</item>
+    </style>
+
+    <!-- caption (12px regular, 1.4 line height) -->
+    <style name="TextCaption">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:lineSpacingMultiplier">1.4</item>
+        <item name="android:textColor">@color/text_secondary</item>
+    </style>
+
+    <!-- button (15px semibold, 1.0 line height) -->
+    <style name="TextButton">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lineSpacingMultiplier">1.0</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+</resources>

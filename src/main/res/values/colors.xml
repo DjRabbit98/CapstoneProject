@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- basic colours -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- primary & accented -->
+    <color name="colorPrimary">#2E7D5B</color>
+    <color name="colorPrimaryDark">#1F5C42</color>
+    <color name="colorAccent">#F4A340</color>
+    <color name="error">#D75452</color>
+    <color name="info">#4A90D9</color>
+
+    <!-- text -->
+    <color name="text_primary">#1F2933</color>
+    <color name="text_secondary">#6B7780</color>
+
+    <!-- miscellaneous -->
+    <color name="background">#F4F7F5</color>
+    <color name="surface">#FFFFFF</color>
+</resources>
