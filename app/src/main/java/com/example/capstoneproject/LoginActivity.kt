@@ -15,7 +15,7 @@ import com.example.capstoneproject.R
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
-class LoginScreen : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
 
     private lateinit var emailInputLayout: TextInputLayout
     private lateinit var emailInput: TextInputEditText
