@@ -1,28 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/homeFragment">
 
+    <!-- Home Fragment -->
     <fragment
-        android:id="@+id/FirstFragment"
+        android:id="@+id/homeFragment"
         android:name="com.example.capstoneproject.ui.HomeFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_home">
-
+        android:label="Home"
+        android:layout="@layout/fragment_home">
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/action_homeFragment_to_logMealFragment"
+            app:destination="@id/logMealFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
+        <action
+            android:id="@+id/action_homeFragment_to_trainingFragment"
+            app:destination="@id/trainingFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
     </fragment>
+
+    <!-- Log Meal Fragment -->
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="com.example.capstoneproject.ui.ProfileFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_profile">
+        android:id="@+id/logMealFragment"
+        android:name="com.example.capstoneproject.ui.MealFragment"
+        android:label="Log Meal" />
 
-        <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
-    </fragment>
+    <!-- Training Fragment -->
+    <fragment
+        android:id="@+id/trainingFragment"
+        android:name="com.example.capstoneproject.ui.TrainFragment"
+        android:label="Training" />
+
+    <!-- Progress Fragment -->
+    <fragment
+        android:id="@+id/progressFragment"
+        android:name="com.example.capstoneproject.ui.ProgressFragment"
+        android:label="Progress" />
+
+    <!-- Profile Fragment -->
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.capstoneproject.ui.ProfileFragment"
+        android:label="Profile" />
 </navigation>

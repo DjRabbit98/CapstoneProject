@@ -19,6 +19,7 @@
 
             <!-- Header -->
             <TextView
+                android:id="@+id/tvGreeting"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/welcome_title"
@@ -26,6 +27,7 @@
                 android:layout_marginBottom="8dp" />
 
             <TextView
+                android:id="@+id/tvTodayStats"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/date_time"
@@ -50,6 +52,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:id="@+id/btnLogMeal"
                     android:text="@string/meal_redirect_button"
                     style="@style/ButtonStyle.Primary" />
 
@@ -57,6 +60,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:id="@+id/btnQuickWorkout"
                     android:text="@string/train_redirect_button"
                     style="@style/ButtonStyle.Secondary" />
             </LinearLayout>
