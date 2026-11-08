@@ -51,7 +51,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.junit)
 
-
     // Compose
     implementation(libs.bundles.compose)
     implementation(libs.compose.activity)
@@ -72,6 +71,8 @@ dependencies {
     // Room
     implementation(libs.bundles.room)
     ksp("androidx.room:room-compiler:${libs.versions.room.get()}")
+    implementation(libs.room.ktx)
+    implementation(libs.room.runtime)
 
     // Networking
     implementation(libs.bundles.networking)
@@ -84,7 +85,22 @@ dependencies {
 
     // Testing
     androidTestImplementation(libs.compose.ui.test.junit)
+
+
+    // Retrofit + OkHttp
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.gson)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
+
+    // Gson
+    implementation(libs.gson)
+
+    // Security - Encrypted SharedPreferences
+    implementation(libs.androidx.security.crypto)
 }
+
+
 
 // KSP config
 ksp {
