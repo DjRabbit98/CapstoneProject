@@ -151,7 +151,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Routine builder"
+                android:text="@string/routine_header"
                 style="@style/TextHeading"
                 android:layout_marginBottom="12dp" />
 
@@ -171,7 +171,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Create custom workouts tailored to your goals."
+                        android:text="@string/routine_desc"
                         style="@style/TextCaption"
                         android:layout_marginBottom="12dp" />
 
@@ -179,7 +179,7 @@
                         android:id="@+id/btn_build_routine"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Build new routine"
+                        android:text="@string/routine_button"
                         style="@style/ButtonStyle.Primary" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -188,7 +188,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Exercise library"
+                android:text="@string/library_header"
                 style="@style/TextHeading"
                 android:layout_marginBottom="12dp" />
 

@@ -28,7 +28,7 @@
                 android:layout_height="80dp"
                 android:layout_margin="8dp"
                 android:background="@drawable/avatar_background"
-                android:contentDescription="profile avatar"
+                android:contentDescription="@string/avatar_context"
                 android:scaleType="centerInside"
                 android:src="@drawable/person" />
 
@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="username"
+                android:text="@string/profile_username"
                 style="@style/TextHeading" />
 
             <TextView
@@ -45,7 +45,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="email"
+                android:text="@string/profile_email"
                 android:textColor="@color/text_secondary"
                 style="@style/TextBody" />
 
@@ -67,7 +67,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Stats Overview"
+                android:text="@string/stats_header"
                 android:textColor="@color/text_primary"
                 style="@style/TextHeading" />
 
@@ -94,7 +94,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="24"
+                        android:text="@string/workout_count"
                         android:textColor="@color/text_primary"
                         style="@style/TextDisplay" />
 
@@ -102,7 +102,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Workouts"
+                        android:text="@string/workout_label"
                         android:textColor="@color/text_secondary"
                         style="@style/TextCaption" />
 
@@ -123,7 +123,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="1.2K"
+                        android:text="@string/calories_count"
                         android:textColor="@color/text_primary"
                         style="@style/TextDisplay" />
 
@@ -131,7 +131,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Calories (24h)"
+                        android:text="@string/calories_label"
                         android:textColor="@color/text_secondary"
                         style="@style/TextCaption" />
 
@@ -152,7 +152,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="7"
+                        android:text="@string/streak_count"
                         android:textColor="@color/colorAccent"
                         style="@style/TextDisplay" />
 
@@ -160,7 +160,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="Day-Streak"
+                        android:text="@string/streak_label"
                         android:textColor="@color/text_secondary"
                         style="@style/TextCaption" />
 
@@ -186,7 +186,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Preferences"
+                android:text="@string/preferences_header"
                 android:textColor="@color/text_primary"
                 style="@style/TextHeading" />
 
@@ -207,7 +207,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Notifications"
+                        android:text="@string/notif_option"
                         android:textColor="@color/text_primary"
                         style="@style/TextBody" />
 
@@ -215,7 +215,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="Notif_desc"
+                        android:text="@string/notif_desc"
                         android:textColor="@color/text_secondary"
                         style="@style/TextCaption" />
 
@@ -246,7 +246,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Detailed Metrics"
+                        android:text="@string/metrics_option"
                         android:textColor="@color/text_primary"
                         style="@style/TextBody" />
 
@@ -254,7 +254,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="metrics_desc"
+                        android:text="@string/metrics_desc"
                         android:textColor="@color/text_secondary"
                         style="@style/TextCaption" />
 
@@ -285,7 +285,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Dark Mode"
+                        android:text="@string/darkmode_option"
                         android:textColor="@color/text_primary"
                         style="@style/TextBody" />
 
@@ -293,7 +293,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
-                        android:text="dark_mode_desc"
+                        android:text="@string/darkmode_desc"
                         android:textColor="@color/text_secondary"
                         style="@style/TextCaption" />
 
@@ -325,7 +325,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Account"
+                android:text="@string/account_header"
                 android:textColor="@color/text_primary"
                 style="@style/TextHeading" />
 
@@ -344,7 +344,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_edit"
-                    android:contentDescription="Edit Profile"
+                    android:contentDescription="@string/edit_profile"
                     app:tint="@color/colorPrimary" />
 
                 <TextView
@@ -352,7 +352,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="12dp"
-                    android:text="Edit Profile"
+                    android:text="@string/edit_profile"
                     android:textColor="@color/text_primary"
                     style="@style/TextBody" />
 
@@ -380,7 +380,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_lock"
-                    android:contentDescription="Change Password"
+                    android:contentDescription="@string/change_password"
                     app:tint="@color/colorPrimary" />
 
                 <TextView
@@ -388,7 +388,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="12dp"
-                    android:text="Change Password"
+                    android:text="@string/change_password"
                     android:textColor="@color/text_primary"
                     style="@style/TextBody" />
 
@@ -419,7 +419,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Support"
+                android:text="@string/support_header"
                 android:textColor="@color/text_primary"
                 style="@style/TextHeading" />
 
@@ -438,7 +438,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_help"
-                    android:contentDescription="FAQ"
+                    android:contentDescription="@string/faq_long"
                     app:tint="@color/colorPrimary" />
 
                 <TextView
@@ -446,7 +446,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="12dp"
-                    android:text="FAQ"
+                    android:text="@string/faq"
                     android:textColor="@color/text_primary"
                     style="@style/TextBody" />
 
@@ -474,7 +474,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_mail"
-                    android:contentDescription="Contact Support"
+                    android:contentDescription="@string/contact_support"
                     app:tint="@color/colorPrimary" />
 
                 <TextView
@@ -482,7 +482,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="12dp"
-                    android:text="Contact Support"
+                    android:text="@string/contact_support"
                     android:textColor="@color/text_primary"
                     style="@style/TextBody" />
 
@@ -510,7 +510,7 @@
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_shield"
-                    android:contentDescription="Privacy Policy"
+                    android:contentDescription="@string/privacy_policy"
                     app:tint="@color/colorPrimary" />
 
                 <TextView
@@ -518,7 +518,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="12dp"
-                    android:text="Privacy Policy"
+                    android:text="@string/privacy_policy"
                     android:textColor="@color/text_primary"
                     style="@style/TextBody" />
 
@@ -550,7 +550,7 @@
                 android:id="@+id/btnLogout"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="Log Out"
+                android:text="@string/logout_button"
                 android:textColor="@color/surface"
                 app:backgroundTint="@color/error"
                 app:cornerRadius="10dp"

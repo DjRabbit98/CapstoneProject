@@ -43,6 +43,7 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
 
+    <!-- login screen -->
     <string name="app_name">Nutrition &amp; Training Tracker</string>
     <string name="app_title">Nutrition &amp; Training Tracker</string>
     <string name="app_subtitle">Track your fitness journey with precision</string>
@@ -54,4 +55,82 @@
     <string name="create_account_button">Create Account</string>
     <string name="security_info">Your login is encrypted and secure</string>
     <string name="security_info_icon">Security lock icon</string>
+
+    <!-- profile screen -->
+    <string name="avatar_context">Profile Avatar</string>
+    <string name="profile_username">Username</string>
+    <string name="profile_email">sample@email.com</string>
+    <string name="stats_header">Stats Overview</string>
+    <string name="workout_count">24</string>
+    <string name="workout_label">Workouts</string>
+    <string name="calories_count">1,750</string>
+    <string name="calories_label">Calories (24h)</string>
+    <string name="streak_count">7</string>
+    <string name="streak_label">Day Streak</string>
+    <string name="preferences_header">Preferences</string>
+    <string name="notif_option">Notifications</string>
+    <string name="notif_desc">Enable notifications for workouts and daily affairs.</string>
+    <string name="metrics_option">Detailed Metrics</string>
+    <string name="metrics_desc">Enable tracking of detailed metrics to aid in your plans.</string>
+    <string name="darkmode_option">Dark Mode</string>
+    <string name="darkmode_desc">Switch up the colour palette to a darker hue; easier on the eyes.</string>
+    <string name="account_header">Account</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="change_password">Change Password</string>
+    <string name="support_header">Support</string>
+    <string name="faq">FAQ</string>
+    <string name="faq_long">Frequently Asked Questions</string>
+    <string name="contact_support">Contact Support</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="logout_button">Log Out</string>
+
+    <!-- meal screen -->
+    <string name="meal_title">Log Meal</string>
+    <string name="meal_photo">Take a photo of your meal</string>
+    <string name="meal_photo_desc">AI will analyse its nutritional content</string>
+    <string name="ai_analysis_header">AI Analysis</string>
+    <string name="ai_analysis_desc">Take a photo and AI will instantly calculate calories, macros, and ingredients.</string>
+    <string name="ai_analysis_button">Analyse with AI</string>
+    <string name="pro_label">Pro</string>
+    <string name="manual_entry_header">Or enter manually:</string>
+    <string name="food_hint">Food name</string>
+    <string name="calories_hint">Calories</string>
+    <string name="protein_hint">Protein (g)</string>
+    <string name="recent_meal_header">Recent Meals</string>
+    <!-- from 4/11/2026: more hardcoded stuff still exists, but will eventually be rendered redundant; no need to list
+         this applies to all screens; if it's not listed in this file then it'll eventually be redundant -->
+    
+    <!-- home screen-->
+    <string name="welcome_title">Welcome, [name]</string>
+    <string name="date_time">Wednesday, 4 November</string>
+    <string name="quick_action_header">Quick Actions</string>
+    <string name="meal_redirect_button">Log meal</string>
+    <string name="train_redirect_button">Start workout</string>
+    <string name="daily_plan_header">Today\'s Plan</string>
+    <string name="calories_budget">Calories remaining</string>
+    <string name="energy_intake">Consumed today</string>
+    <string name="water_intake">Water intake</string>
+    <string name="ai_coach_header">AI Coach</string>
+    <string name="ai_coach_desc">Get personalised nutrition and workout tips based on your progress.</string>
+    <string name="soon_tm">Coming Soon</string>
+
+    <!-- train screen -->
+    <string name="train_title">Training</string>
+    <string name="roster_header">Your workout roster</string>
+    <!-- more temp-hardcoded affairs -->
+    <string name="routine_header">Routine builder</string>
+    <string name="routine_desc">Create custom workouts tailored to your goals.</string>
+    <string name="routine_button">Build new routine</string>
+    <string name="library_header">Exercise library</string>
+    <!-- more temp-hardcoded affairs -->
+
+    <!-- progress screen -->
+    <string name="progress_title">Your Progress</string>
+    <string name="progress_subtitle">Track your fitness journey</string>
+    <string name="weight_header">Weight Progress</string>
+    <string name="current_label">Current</string>
+    <string name="goal_label">Goal</string>
+    <string name="progress_label">Progress</string>
+    <string name="week_header">This Week</string>
+    <string name="achievement_header">Achievements</string>
 </resources>

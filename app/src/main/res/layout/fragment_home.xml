@@ -21,14 +21,14 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Welcome, Alex"
+                android:text="@string/welcome_title"
                 style="@style/TextDisplay"
                 android:layout_marginBottom="8dp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Tuesday, 29 October"
+                android:text="@string/date_time"
                 style="@style/TextCaption"
                 android:layout_marginBottom="24dp" />
 
@@ -36,7 +36,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Quick Actions"
+                android:text="@string/quick_action_header"
                 style="@style/TextHeading"
                 android:layout_marginBottom="12dp" />
 
@@ -50,14 +50,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Log meal"
+                    android:text="@string/meal_redirect_button"
                     style="@style/ButtonStyle.Primary" />
 
                 <com.google.android.material.button.MaterialButton
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Start workout"
+                    android:text="@string/train_redirect_button"
                     style="@style/ButtonStyle.Secondary" />
             </LinearLayout>
 
@@ -80,7 +80,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Today's Plan"
+                        android:text="@string/daily_plan_header"
                         style="@style/TextHeading"
                         android:layout_marginBottom="12dp" />
 
@@ -107,7 +107,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Calories remaining"
+                                android:text="@string/calories_budget"
                                 style="@style/TextCaption" />
                         </LinearLayout>
 
@@ -135,7 +135,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Consumed today"
+                                android:text="@string/energy_intake"
                                 style="@style/TextCaption"
                                 android:layout_marginTop="4dp" />
                         </LinearLayout>
@@ -152,7 +152,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Water intake"
+                            android:text="@string/water_intake"
                             style="@style/TextBody" />
 
                         <TextView
@@ -173,7 +173,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Workout"
+                            android:text="@string/workout_label"
                             style="@style/TextBody" />
 
                         <TextView
@@ -210,13 +210,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="AI Coach"
+                            android:text="@string/ai_coach_header"
                             style="@style/TextHeading" />
 
                         <com.google.android.material.chip.Chip
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Beta"
+                            android:text="@string/pro_label"
                             android:textColor="@color/white"
                             app:chipBackgroundColor="@color/colorAccent"
                             app:chipIconTint="@color/white" />
@@ -225,14 +225,14 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Get personalised nutrition and workout tips based on your progress."
+                        android:text="@string/ai_coach_desc"
                         style="@style/TextCaption"
                         android:layout_marginBottom="12dp" />
 
                     <com.google.android.material.button.MaterialButton
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Coming soon"
+                        android:text="@string/soon_tm"
                         style="@style/ButtonStyle.Secondary"
                         android:enabled="false" />
                 </LinearLayout>

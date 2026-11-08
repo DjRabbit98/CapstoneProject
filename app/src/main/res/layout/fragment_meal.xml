@@ -21,7 +21,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Log Meal"
+                android:text="@string/meal_title"
                 style="@style/TextDisplay"
                 android:layout_marginBottom="24dp" />
 
@@ -45,14 +45,14 @@
                         android:layout_width="56dp"
                         android:layout_height="56dp"
                         android:icon="@drawable/ic_camera"
-                        android:contentDescription="Take a photo"
+                        android:contentDescription="@string/meal_photo"
                         style="@style/ButtonStyle.Primary"
                         app:iconGravity="textStart" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Take a photo of your meal"
+                        android:text="@string/meal_photo"
                         style="@style/TextBody"
                         android:gravity="center"
                         android:layout_marginTop="12dp" />
@@ -60,7 +60,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="AI will analyse the nutritional content"
+                        android:text="@string/meal_photo_desc"
                         style="@style/TextCaption"
                         android:gravity="center"
                         android:layout_marginTop="4dp" />
@@ -92,13 +92,13 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="AI Analysis"
+                            android:text="@string/ai_analysis_header"
                             style="@style/TextHeading" />
 
                         <com.google.android.material.chip.Chip
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Pro"
+                            android:text="@string/pro_label"
                             android:textColor="@color/white"
                             app:chipBackgroundColor="@color/colorAccent" />
                     </LinearLayout>
@@ -106,7 +106,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Take a photo and AI will instantly calculate calories, macros, and ingredients."
+                        android:text="@string/ai_analysis_desc"
                         style="@style/TextCaption"
                         android:layout_marginBottom="12dp" />
 
@@ -114,7 +114,7 @@
                         android:id="@+id/btn_analyse"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Analyse with AI"
+                        android:text="@string/ai_analysis_button"
                         style="@style/ButtonStyle.Primary"
                         android:enabled="false" />
                 </LinearLayout>
@@ -130,7 +130,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Or enter manually"
+                    android:text="@string/manual_entry_header"
                     style="@style/TextHeading"
                     android:layout_marginBottom="12dp" />
 
@@ -143,7 +143,7 @@
                         android:id="@+id/et_food_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="Food name"
+                        android:hint="@string/food_hint"
                         android:inputType="text" />
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -163,7 +163,7 @@
                             android:id="@+id/et_calories"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Calories"
+                            android:hint="@string/calories_hint"
                             android:inputType="number" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -177,7 +177,7 @@
                             android:id="@+id/et_protein"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Protein (g)"
+                            android:hint="@string/protein_hint"
                             android:inputType="numberDecimal" />
                     </com.google.android.material.textfield.TextInputLayout>
                 </LinearLayout>
@@ -194,7 +194,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Recent meals"
+                android:text="@string/recent_meal_header"
                 style="@style/TextHeading"
                 android:layout_marginBottom="12dp" />
 
