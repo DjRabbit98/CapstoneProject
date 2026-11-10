@@ -1,7 +1,7 @@
 """AI provider wrapper. Routes never touch a vendor SDK directly, so swapping provider is a change here only.
 
 Provider selection (env AI_PROVIDER): "groq", "gemini", or unset = auto (Groq if GROQ_API_KEY is set, else Gemini).
-Groq is called through its OpenAI-compatible REST API with the standard library (no extra package).
+Both providers are called over plain REST with the standard library (no vendor SDK).
 """
 import json
 import logging
@@ -38,7 +38,7 @@ def provider() -> str:
 def model_name() -> str:
     if provider() == "groq":
         return os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
-    return os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
+    return os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 
 
 def _require_key(var: str) -> str:
@@ -72,11 +72,18 @@ def _wrap_vendor_error(exc: Exception) -> HTTPException:
     log.exception("AI call failed (%s)", provider())
     detail = f"AI service error: {type(exc).__name__}"
     if isinstance(exc, urllib.error.HTTPError):
+        try:
+            vendor_msg = json.loads(exc.read()).get("error", {}).get("message", "")
+        except Exception:
+            vendor_msg = ""
+        log.error("Vendor response %s: %.500s", exc.code, vendor_msg)
         detail = f"AI service error: HTTP {exc.code}"
-        if exc.code == 401:
-            detail += " (check GROQ_API_KEY)"
+        if exc.code in (400, 401, 403):
+            detail += " (check the API key)"
         elif exc.code == 429:
             detail += " (rate limit, try again shortly)"
+        if vendor_msg:
+            detail += f" - {vendor_msg[:200]}"
     return HTTPException(status.HTTP_502_BAD_GATEWAY, detail)
 
 
@@ -105,25 +112,63 @@ def _groq_generate(messages: list[dict], system: str, json_mode: bool) -> str:
     return (data["choices"][0]["message"]["content"] or "").strip()
 
 
-# ---------------------------------------------------------------- Gemini
+# ---------------------------------------------------------------- Gemini (REST, no SDK)
+GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+
+
 def _gemini_generate(messages: list[dict], system: str, json_mode: bool) -> str:
     key = _require_key("GEMINI_API_KEY")
-    from google import genai
-    from google.genai import types
-
-    contents = [
-        {"role": "model" if m["role"] == "assistant" else "user", "parts": [{"text": m["content"]}]} for m in messages
-    ]
-    config = types.GenerateContentConfig(
-        system_instruction=system,
-        temperature=0.7,
-        response_mime_type="application/json" if json_mode else None,
+    body = {
+        "system_instruction": {"parts": [{"text": system}]},
+        "contents": [
+            {"role": "model" if m["role"] == "assistant" else "user", "parts": [{"text": m["content"]}]}
+            for m in messages
+        ],
+        "generationConfig": {"temperature": 0.7, "maxOutputTokens": 4096},
+    }
+    if json_mode:
+        body["generationConfig"]["responseMimeType"] = "application/json"
+    req = urllib.request.Request(
+        GEMINI_URL.format(model=model_name()),
+        data=json.dumps(body).encode(),
+        headers={"x-goog-api-key": key, "Content-Type": "application/json"},
+        method="POST",
     )
     try:
-        resp = genai.Client(api_key=key).models.generate_content(model=model_name(), contents=contents, config=config)
+        with urllib.request.urlopen(req, timeout=60) as resp:
+            data = json.loads(resp.read())
+        parts = data["candidates"][0]["content"]["parts"]
+        text = "".join(p.get("text", "") for p in parts)
     except Exception as exc:
         raise _wrap_vendor_error(exc) from exc
-    return (resp.text or "").strip()
+    return text.strip()
+
+
+def list_models() -> list[dict]:
+    """Models the configured key can use (name + supported methods). Handy for picking GEMINI_MODEL/GROQ_MODEL."""
+    if provider() == "groq":
+        key = _require_key("GROQ_API_KEY")
+        req = urllib.request.Request("https://api.groq.com/openai/v1/models", headers={"Authorization": f"Bearer {key}"})
+        try:
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                data = json.loads(resp.read())
+        except Exception as exc:
+            raise _wrap_vendor_error(exc) from exc
+        return [{"name": m["id"]} for m in data.get("data", [])]
+    key = _require_key("GEMINI_API_KEY")
+    req = urllib.request.Request(
+        "https://generativelanguage.googleapis.com/v1beta/models?pageSize=200", headers={"x-goog-api-key": key}
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read())
+    except Exception as exc:
+        raise _wrap_vendor_error(exc) from exc
+    return [
+        {"name": m["name"].removeprefix("models/"), "methods": m.get("supportedGenerationMethods", [])}
+        for m in data.get("models", [])
+        if "generateContent" in m.get("supportedGenerationMethods", [])
+    ]
 
 
 def _generate(messages: list[dict], system: str, json_mode: bool = False) -> str:
