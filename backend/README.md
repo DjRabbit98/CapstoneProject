@@ -10,7 +10,19 @@ The server the Android app calls for the AI coach. Python 3.12.
 3. Run `run.py` (green arrow in PyCharm, or `python run.py`).
 4. Open http://localhost:8000/docs to try every endpoint in the browser.
 
-From the Android emulator the server address is `http://10.0.2.2:8000`.
+## Connecting the Android app
+
+The app's `ApiClient.BASE_URL` is `http://127.0.0.1:8000/`. On the emulator, open a tunnel once per emulator boot
+(Android Studio → Terminal, PowerShell):
+
+```
+& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" reverse tcp:8000 tcp:8000
+```
+
+Check with `... reverse --list` → `host-N tcp:8000 tcp:8000`. This routes the emulator's port 8000 to the PC over the
+debug connection, so it works even when the emulator's own network is broken (VPN clients and Android Studio's
+"Auto-detect proxy" setting both caused that on a team laptop). `run.py` binds `0.0.0.0`, so a physical phone on the
+same Wi-Fi can use the PC's LAN IP instead — add it to `app/src/main/res/xml/network_security_config.xml`.
 
 ## Endpoints
 
