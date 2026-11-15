@@ -22,6 +22,13 @@ From the Android emulator the server address is `http://10.0.2.2:8000`.
 | GET / PUT | `/profile` | Age, sex, height, weight, activity, goal, diet, allergies; returns a daily calorie target |
 | POST | `/ai/chat` | Conversational coach. Body: `message`, `history[]`, optional `profile` |
 | POST | `/ai/recommend` | `kind`: `meal_plan` or `workout_plan`, `days` 1–7, optional `request`, optional `profile` |
+| POST | `/ai/estimate` | kcal + macros for a described meal (`description`, optional `portion`) — the food log's "fill in for me" |
+| GET | `/ai/models` | Models the configured key can use, and which is active |
+| POST / GET | `/log/meals` | Log a meal; get one day's meals with totals, calorie target and calories remaining (`?date=YYYY-MM-DD`) |
+| DELETE | `/log/meals/{id}` | Remove a logged meal |
+| GET | `/log/summary` | Calories per day for the last `days` (default 7), zero-filled — dashboard / weekly chart |
+| POST / GET | `/log/weight` | Record a weigh-in (also updates the profile weight); history with start/latest/change (`?days=90`) — Progress chart |
+| DELETE | `/log/weight/{id}` | Remove a weigh-in |
 | GET | `/health` | Liveness check |
 
 The AI endpoints take the profile two ways: send a `profile` object in the request (for the app, which keeps the profile in its on-device Room database), or send a bearer token and the server uses that user's `/profile`.
@@ -37,6 +44,10 @@ Example `/ai/chat` body:
 }
 ```
 
+## Where nutrition numbers come from
+
+Every logged meal carries a `source`: `manual` (typed by the user), `ai_estimate` (from `/ai/estimate`, which the user confirms or edits before saving), `ai_plan` (copied from an `/ai/recommend` meal plan) or `photo` (reserved for image analysis). Daily calorie targets are computed deterministically in `nutrition.py` (Mifflin-St Jeor), not by the AI.
+
 ## Safety rules built into every AI call
 
 No medical diagnoses or clinical advice; evidence-based guidance only; never includes a listed allergen; no crash diets or unsafe exercise. See `app/ai_service.py`.
@@ -47,8 +58,9 @@ No medical diagnoses or clinical advice; evidence-based guidance only; never inc
 app/main.py          FastAPI app, routers, table creation
 app/routers/auth.py  register / login / me
 app/routers/profile.py
-app/routers/ai.py    chat / recommend
+app/routers/ai.py    chat / recommend / estimate / models
+app/routers/log.py   meal log, daily totals, weekly summary, weigh-ins
 app/ai_service.py    Groq/Gemini wrapper + safety prompt (provider chosen from .env)
 app/nutrition.py     calorie target (Mifflin-St Jeor)
-app/models.py        SQLAlchemy tables (SQLite file wellness.db; set DATABASE_URL for PostgreSQL)
+app/models.py        SQLAlchemy tables: users, profiles, meal_logs, weight_logs (SQLite file wellness.db; set DATABASE_URL for PostgreSQL)
 ```

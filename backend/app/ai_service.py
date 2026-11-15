@@ -208,3 +208,22 @@ def recommend(kind: str, days: int, extra: str | None, context: str) -> dict:
     except json.JSONDecodeError:
         log.warning("AI returned non-JSON: %.200s", raw)
         raise HTTPException(status.HTTP_502_BAD_GATEWAY, "AI returned an unreadable plan, please try again")
+
+
+ESTIMATE_SCHEMA = """Return JSON only, shaped like:
+{"name":"","kcal":0,"protein_g":0,"carbs_g":0,"fat_g":0,"confidence":"low|medium|high","assumptions":""}
+Estimate a typical serving using mainstream nutrition reference values (e.g. Australian Food Composition Database).
+State the portion you assumed in "assumptions". Use integers for kcal and one decimal for grams."""
+
+
+def estimate_meal(description: str, portion: str | None) -> dict:
+    """Rough nutrition estimate for a described meal, so a user can log food without looking up numbers."""
+    prompt = f"Estimate the nutrition of this meal: {description}."
+    if portion:
+        prompt += f" Portion: {portion}."
+    raw = _generate([{"role": "user", "content": prompt}], SAFETY_RULES + "\n\n" + ESTIMATE_SCHEMA, json_mode=True)
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        log.warning("AI returned non-JSON estimate: %.200s", raw)
+        raise HTTPException(status.HTTP_502_BAD_GATEWAY, "AI returned an unreadable estimate, please try again")

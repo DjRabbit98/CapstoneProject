@@ -5,7 +5,7 @@ from .. import ai_service
 from ..database import get_db
 from ..models import Profile, User
 from ..nutrition import daily_calorie_target
-from ..schemas import ChatRequest, ChatResponse, ProfileIn, RecommendRequest
+from ..schemas import ChatRequest, ChatResponse, EstimateOut, EstimateRequest, ProfileIn, RecommendRequest
 from ..security import get_optional_user
 
 router = APIRouter(prefix="/ai", tags=["ai"])
@@ -37,3 +37,11 @@ def chat(body: ChatRequest, user: User | None = Depends(get_optional_user), db: 
 @router.post("/recommend")
 def recommend(body: RecommendRequest, user: User | None = Depends(get_optional_user), db: Session = Depends(get_db)):
     return ai_service.recommend(body.kind, body.days, body.request, _context(body.profile, user, db))
+
+
+@router.post("/estimate", response_model=EstimateOut)
+def estimate(body: EstimateRequest, user: User | None = Depends(get_optional_user)):
+    """Estimate kcal and macros for a described meal (the food log's 'fill in for me' button).
+    The result is an approximation the user should confirm or edit before saving (report risk R2)."""
+    data = ai_service.estimate_meal(body.description, body.portion)
+    return EstimateOut(**data)

@@ -88,3 +88,96 @@ class RecommendRequest(BaseModel):
     request: str | None = Field(None, max_length=500, description='Optional extra ask, e.g. "more vegan recipes"')
     days: int = Field(1, ge=1, le=7)
     profile: ProfileIn | None = Field(None, description="Send the user's profile here if the app keeps it on-device")
+
+
+# ---------- Food log & progress ----------
+import re as _re  # noqa: E402
+
+MealType = Literal["breakfast", "lunch", "dinner", "snack"]
+LogSource = Literal["manual", "ai_estimate", "ai_plan", "photo"]
+_DATE = _re.compile(r"^\d{4}-\d{2}-\d{2}$")
+
+
+def _check_date(v: str | None) -> str | None:
+    if v is not None and not _DATE.match(v):
+        raise ValueError("date must be YYYY-MM-DD")
+    return v
+
+
+class MealLogIn(BaseModel):
+    date: str | None = Field(None, description="YYYY-MM-DD; defaults to today (server date)")
+    meal_type: MealType
+    name: str = Field(..., min_length=1, max_length=200)
+    kcal: int = Field(..., ge=0, le=5000)
+    protein_g: float | None = Field(None, ge=0, le=500)
+    carbs_g: float | None = Field(None, ge=0, le=1000)
+    fat_g: float | None = Field(None, ge=0, le=500)
+    source: LogSource = "manual"
+
+    _d = field_validator("date")(classmethod(lambda cls, v: _check_date(v)))
+
+
+class MealLogOut(MealLogIn):
+    id: str
+    date: str
+
+    model_config = {"from_attributes": True}
+
+
+class DayTotals(BaseModel):
+    kcal: int
+    protein_g: float
+    carbs_g: float
+    fat_g: float
+
+
+class DayLogOut(BaseModel):
+    date: str
+    meals: list[MealLogOut]
+    totals: DayTotals
+    calorie_target: int | None
+    calories_remaining: int | None
+
+
+class DaySummary(BaseModel):
+    date: str
+    kcal: int
+    meals: int
+
+
+class WeightLogIn(BaseModel):
+    date: str | None = Field(None, description="YYYY-MM-DD; defaults to today")
+    weight_kg: float = Field(..., ge=30, le=300)
+    notes: str | None = Field(None, max_length=300)
+
+    _d = field_validator("date")(classmethod(lambda cls, v: _check_date(v)))
+
+
+class WeightLogOut(WeightLogIn):
+    id: str
+    date: str
+
+    model_config = {"from_attributes": True}
+
+
+class WeightHistoryOut(BaseModel):
+    entries: list[WeightLogOut]
+    start_kg: float | None
+    latest_kg: float | None
+    change_kg: float | None
+
+
+class EstimateRequest(BaseModel):
+    description: str = Field(..., min_length=2, max_length=500, description='e.g. "large chicken caesar salad"')
+    portion: str | None = Field(None, max_length=100, description='optional, e.g. "1 bowl", "250 g"')
+
+
+class EstimateOut(BaseModel):
+    name: str
+    kcal: int
+    protein_g: float
+    carbs_g: float
+    fat_g: float
+    confidence: Literal["low", "medium", "high"]
+    assumptions: str
+    source: str = "ai_estimate"

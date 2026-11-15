@@ -41,3 +41,35 @@ class Profile(Base):
     dietary_preferences: Mapped[str | None] = mapped_column(Text, nullable=True)
     allergies: Mapped[str | None] = mapped_column(Text, nullable=True)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now, onupdate=_now)
+
+
+class MealLog(Base):
+    """One logged meal (report FR: Log Food Intake). Nutrition values come from the user, an AI estimate,
+    or an AI meal plan; `source` records which so the dashboard can say where its numbers came from."""
+
+    __tablename__ = "meal_logs"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id"), index=True)
+    date: Mapped[str] = mapped_column(String(10), index=True)  # YYYY-MM-DD, user's local day
+    meal_type: Mapped[str] = mapped_column(String(10))  # breakfast / lunch / dinner / snack
+    name: Mapped[str] = mapped_column(String(200))
+    kcal: Mapped[int] = mapped_column(Integer)
+    protein_g: Mapped[float | None] = mapped_column(Float, nullable=True)
+    carbs_g: Mapped[float | None] = mapped_column(Float, nullable=True)
+    fat_g: Mapped[float | None] = mapped_column(Float, nullable=True)
+    source: Mapped[str] = mapped_column(String(10), default="manual")  # manual / ai_estimate / ai_plan / photo
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
+
+
+class WeightLog(Base):
+    """A weigh-in (report FR: Track Progress Towards Goals)."""
+
+    __tablename__ = "weight_logs"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    user_id: Mapped[str] = mapped_column(String(36), ForeignKey("users.id"), index=True)
+    date: Mapped[str] = mapped_column(String(10), index=True)  # YYYY-MM-DD
+    weight_kg: Mapped[float] = mapped_column(Float)
+    notes: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=_now)
