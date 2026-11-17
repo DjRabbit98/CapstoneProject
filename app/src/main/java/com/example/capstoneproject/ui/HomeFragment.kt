@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -21,6 +22,10 @@ class HomeFragment : Fragment() {
     private var tvGreeting: TextView? = null
     private var tvTodayStats: TextView? = null
     private var btnOpenCoach: MaterialButton? = null
+    private var tvCaloriesRemaining: TextView? = null
+    private var tvCaloriesEaten: TextView? = null
+    private var tvProteinToday: TextView? = null
+    private var pbCalories: ProgressBar? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,6 +49,10 @@ class HomeFragment : Fragment() {
         tvGreeting = view.findViewById(R.id.tvGreeting)
         tvTodayStats = view.findViewById(R.id.tvTodayStats)
         btnOpenCoach = view.findViewById(R.id.btnOpenCoach)
+        tvCaloriesRemaining = view.findViewById(R.id.tvCaloriesRemaining)
+        tvCaloriesEaten = view.findViewById(R.id.tvCaloriesEaten)
+        tvProteinToday = view.findViewById(R.id.tvProteinToday)
+        pbCalories = view.findViewById(R.id.pbCalories)
     }
 
     private fun setClickListeners() {
@@ -88,6 +97,17 @@ class HomeFragment : Fragment() {
                         "Today: ${day.meals.size} meals • $eaten / $target kcal"
                     else
                         "Today: ${day.meals.size} meals • $eaten kcal (set your profile for a target)"
+
+                    tvCaloriesEaten?.text = "$eaten kcal"
+                    tvProteinToday?.text = "${day.totals.protein_g.toInt()} g"
+                    if (target != null) {
+                        val remaining = (target - eaten).coerceAtLeast(0)
+                        tvCaloriesRemaining?.text = "%,d".format(remaining)
+                        pbCalories?.progress = (eaten * 100 / target).coerceIn(0, 100)
+                    } else {
+                        tvCaloriesRemaining?.text = "—"
+                        pbCalories?.progress = 0
+                    }
                 } else {
                     tvTodayStats?.text = "Today: no data yet"
                 }
@@ -95,6 +115,11 @@ class HomeFragment : Fragment() {
                 tvTodayStats?.text = "Today: offline"
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadUserData()
     }
 
     private fun partOfDay(): String {

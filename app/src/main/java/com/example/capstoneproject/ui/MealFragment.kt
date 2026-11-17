@@ -188,6 +188,9 @@ class MealFragment : Fragment() {
                 }
                 val plan = Gson().fromJson(resp.body(), MealPlan::class.java)
                 renderPlan(plan)
+                // Bring the plan card (CardView = llMealPlan's grandparent) to the top of the screen.
+                val card = binding.llMealPlan.parent.parent as View
+                binding.svMeal.post { binding.svMeal.smoothScrollTo(0, card.top) }
             } catch (e: IOException) {
                 binding.llMealPlan.removeAllViews()
                 binding.llMealPlan.addView(caption("Can't reach the server."))

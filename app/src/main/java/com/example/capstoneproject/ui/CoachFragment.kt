@@ -63,7 +63,7 @@ class CoachFragment : Fragment() {
                 // History is everything *before* this message.
                 val resp = ApiClient.api.chat(ChatRequest(message = text, history = history.toList()))
                 if (resp.isSuccessful) {
-                    val reply = resp.body()?.reply ?: "(no reply)"
+                    val reply = (resp.body()?.reply ?: "(no reply)").stripMarkdown()
                     thinking.text = reply
                     history += ChatTurn("user", text)
                     history += ChatTurn("model", reply)
@@ -113,6 +113,12 @@ class CoachFragment : Fragment() {
     private fun scrollToBottom() {
         binding.svMessages.post { binding.svMessages.fullScroll(View.FOCUS_DOWN) }
     }
+
+    /** Gemini answers in light markdown; TextView shows it raw, so drop the emphasis markers. */
+    private fun String.stripMarkdown(): String =
+        replace(Regex("\\*\\*(.+?)\\*\\*"), "$1")
+            .replace(Regex("(?m)^\\s*[\\*-]\\s+"), "• ")
+            .replace(Regex("(?m)^#+\\s*"), "")
 
     private fun Int.dp(): Int = (this * resources.displayMetrics.density).toInt()
 
