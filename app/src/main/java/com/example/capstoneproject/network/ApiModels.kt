@@ -129,3 +129,33 @@ data class EstimateOut(
     val assumptions: String,
     val source: String
 )
+
+// ---- AI plan shapes (what /ai/recommend returns inside the JsonElement) ----
+
+data class PlanMeal(
+    val name: String?,
+    val meal_type: String?,
+    val kcal: Int?,
+    val protein_g: Double?,
+    val carbs_g: Double?,
+    val fat_g: Double?,
+    val ingredients: List<String>?,
+    val instructions: String?
+)
+
+data class MealPlanDay(val day: Int?, val total_kcal: Int?, val meals: List<PlanMeal>?)
+
+data class MealPlan(val days: List<MealPlanDay>?, val notes: String?, val disclaimer: String?)
+
+data class PlanExercise(
+    val name: String?,
+    val type: String?,
+    val sets: Int?,
+    val reps: String?,
+    val duration_min: Int?,
+    val instructions: String?
+)
+
+data class WorkoutPlanDay(val day: Int?, val focus: String?, val duration_min: Int?, val exercises: List<PlanExercise>?)
+
+data class WorkoutPlan(val days: List<WorkoutPlanDay>?, val notes: String?, val disclaimer: String?)

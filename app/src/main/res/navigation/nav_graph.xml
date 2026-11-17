@@ -18,6 +18,11 @@
             app:enterAnim="@android:anim/fade_in"
             app:exitAnim="@android:anim/fade_out" />
         <action
+            android:id="@+id/action_homeFragment_to_coachFragment"
+            app:destination="@id/coachFragment"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
+        <action
             android:id="@+id/action_homeFragment_to_trainingFragment"
             app:destination="@id/trainingFragment"
             app:popUpTo="@id/homeFragment"
@@ -43,6 +48,12 @@
         android:id="@+id/progressFragment"
         android:name="com.example.capstoneproject.ui.ProgressFragment"
         android:label="Progress" />
+
+    <!-- AI Coach (reached from Home) -->
+    <fragment
+        android:id="@+id/coachFragment"
+        android:name="com.example.capstoneproject.ui.CoachFragment"
+        android:label="AI Coach" />
 
     <!-- Profile Fragment -->
     <fragment
