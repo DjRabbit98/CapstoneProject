@@ -68,3 +68,64 @@ data class RecommendRequest(
 
 /** FastAPI error body: {"detail": "..."} or {"detail": [ {...validation...} ]} */
 data class ApiError(val detail: Any?)
+
+// ---- Food log & progress (backend/app/routers/log.py) ----
+
+data class MealLogIn(
+    val meal_type: String,                   // breakfast | lunch | dinner | snack
+    val name: String,
+    val kcal: Int,
+    val protein_g: Double? = null,
+    val carbs_g: Double? = null,
+    val fat_g: Double? = null,
+    val source: String = "manual",           // manual | ai_estimate | ai_plan | photo
+    val date: String? = null                 // YYYY-MM-DD, null = today
+)
+
+data class MealLogOut(
+    val id: String,
+    val date: String,
+    val meal_type: String,
+    val name: String,
+    val kcal: Int,
+    val protein_g: Double?,
+    val carbs_g: Double?,
+    val fat_g: Double?,
+    val source: String
+)
+
+data class DayTotals(val kcal: Int, val protein_g: Double, val carbs_g: Double, val fat_g: Double)
+
+data class DayLogOut(
+    val date: String,
+    val meals: List<MealLogOut>,
+    val totals: DayTotals,
+    val calorie_target: Int?,
+    val calories_remaining: Int?
+)
+
+data class DaySummary(val date: String, val kcal: Int, val meals: Int)
+
+data class WeightLogIn(val weight_kg: Double, val notes: String? = null, val date: String? = null)
+
+data class WeightLogOut(val id: String, val date: String, val weight_kg: Double, val notes: String?)
+
+data class WeightHistoryOut(
+    val entries: List<WeightLogOut>,
+    val start_kg: Double?,
+    val latest_kg: Double?,
+    val change_kg: Double?
+)
+
+data class EstimateRequest(val description: String, val portion: String? = null)
+
+data class EstimateOut(
+    val name: String,
+    val kcal: Int,
+    val protein_g: Double,
+    val carbs_g: Double,
+    val fat_g: Double,
+    val confidence: String,                  // low | medium | high
+    val assumptions: String,
+    val source: String
+)

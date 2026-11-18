@@ -37,3 +37,37 @@ Backend run from PyCharm on Windows (`python run.py`), provider **Gemini** via R
 - `gemini-3.8-flash` hangs past the 60 s timeout even on a one-word prompt (thinking model) → use `gemini-3.5-flash-lite` for the coach.
 - `.env` edits are not picked up by uvicorn's reloader (it watches `app/` only) → restart the run configuration after changing `.env`.
 - Groq added as an alternative provider (`GROQ_API_KEY`), auto-selected when set; untested so far (no key obtained).
+
+## Food log & progress endpoint tests — 15 Nov 2026 (Dylan)
+Fresh SQLite database, no AI key. Profile: 27 M, 173 cm, 80 kg, light, muscle_gain → target 2710 kcal.
+
+| # | Test | Request | Result | Status |
+|---|---|---|---|---|
+| 16 | Log a meal | POST /log/meals breakfast "Oats with banana" 420 kcal | entry returned with id, date defaulted to today, source manual | 201 ✅ |
+| 17 | Log an AI-estimated meal | POST /log/meals lunch 650 kcal source=ai_estimate | stored with source recorded | 201 ✅ |
+| 18 | Invalid meal type | meal_type "brunch" | "Input should be breakfast, lunch, dinner or snack" | 422 ✅ |
+| 19 | Day view | GET /log/meals | 2 meals, totals 1070 kcal / 59 g protein, target 2710, remaining 1640 | 200 ✅ |
+| 20 | Weigh-ins | POST /log/weight ×3 (82.0 on 1 Nov, 81.2 on 8 Nov, 80.6 today) | all stored | 201 ✅ |
+| 21 | Weight history | GET /log/weight?days=30 | 3 entries oldest-first, start 82.0, latest 80.6, change −1.4 kg | 200 ✅ |
+| 22 | Profile follows weigh-in | GET /profile | weight 80.6, calorie target recalculated to 2720 | 200 ✅ |
+| 23 | Weekly summary | GET /log/summary?days=7 | 7 days oldest-first, zero-filled, today 1070 kcal | 200 ✅ |
+| 24 | Delete own meal / unauthenticated read | DELETE /log/meals/{id}; GET /log/meals with no token | 204; 401 | ✅ |
+| 25 | Estimate with no AI key | POST /ai/estimate | clean 503 "AI service not configured" | ✅ |
+
+| 26 | AI estimate, specific | POST /ai/estimate "large chicken caesar salad" (Gemini, Dylan's laptop) | 580 kcal, 42 g protein, 18 g carbs, 38 g fat, confidence high, portion assumption stated | 1.4 s, 200 ✅ |
+| 27 | AI estimate, with portion | "oats with banana and honey", portion "1 bowl" | 380 kcal, 9.5 / 76 / 4.2 g, confidence high. First attempt hit a Gemini "high demand" 503 → returned as clean 502 with the vendor message; retry succeeded | 0.9 s, 200 ✅ |
+| 28 | AI estimate, vague | "some food" | generic 450 kcal estimate, confidence **low** — app should prompt the user to refine | 1.0 s, 200 ✅ |
+
+Known risk: Gemini free tier occasionally returns 503 "high demand"; the app should offer a retry on 502 responses.
+
+
+## App ↔ backend on the emulator — 15 Nov 2026 (Dylan)
+Android Studio, "Medium Phone API 37" emulator, backend in PyCharm on the same laptop, `adb reverse tcp:8000 tcp:8000`.
+
+| # | Test | Result | Status |
+|---|---|---|---|
+| 29 | Sign Up from the app (DylanDemo / Dylan_Demo@hotmail.com) | "Account created! Please log in."; backend `POST /auth/register 201` | ✅ |
+| 30 | Log in from the app | `[TODO: confirm]` "Welcome back!" → Home; `POST /auth/login 200` | |
+| 31 | Wrong password from the app | `[TODO: confirm]` red "Incorrect email or password" under the field | |
+
+**Network troubleshooting log (for the user manual / Challenges):** the emulator could not reach the host at `10.0.2.2` and could not load any website — `SocketTimeoutException` after 15 s. Not fixed by: binding the backend to `0.0.0.0`, quitting NordVPN, turning Windows Firewall off, cold-booting the emulator. Root cause was that Android Studio's HTTP proxy was on **Auto-detect**, which handed the emulator a dead system proxy; even after switching to No proxy the guest network stayed down. Resolution: point the app at `127.0.0.1` and tunnel with `adb reverse` — independent of guest networking. Also found and fixed during this: the OkHttp logging interceptor at `Level.BODY` was printing the sign-up password to Logcat (now `BASIC`).

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import com.example.capstoneproject.LoginActivity
+import com.example.capstoneproject.network.ApiClient
 import com.example.capstoneproject.R
 import com.google.android.material.button.MaterialButton
 
@@ -69,6 +70,9 @@ class ProfileFragment : Fragment() {
     private fun logout() {
         try {
             Log.d(TAG, "Logout initiated")
+            // Forget the session: the bearer token (what LoginActivity checks) and the cached user details
+            ApiClient.clearToken()
+            requireContext().getSharedPreferences("AppPreferences", 0).edit().clear().apply()
             val intent = Intent(requireContext(), LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)

@@ -13,12 +13,17 @@ import java.util.concurrent.TimeUnit
 /**
  * Single Retrofit instance for the whole app.
  *
- * BASE_URL: 10.0.2.2 is the Android emulator's alias for the host PC's localhost.
- * On a physical phone replace with the PC's LAN IP, e.g. "http://192.168.1.20:8000/".
+ * BASE_URL options (dev only):
+ *  - "http://127.0.0.1:8000/"  — emulator with an adb tunnel. Run once per emulator boot:
+ *        adb reverse tcp:8000 tcp:8000
+ *    (works even when the emulator has no network / a VPN or proxy breaks 10.0.2.2)
+ *  - "http://10.0.2.2:8000/"   — emulator's alias for the host PC, when emulator networking works
+ *  - "http://192.168.x.x:8000/" — a physical phone on the same Wi-Fi (PC's LAN IP); backend binds 0.0.0.0
+ * Whichever host you use must also be listed in res/xml/network_security_config.xml.
  */
 object ApiClient {
 
-    private const val BASE_URL = "http://10.0.2.2:8000/"
+    private const val BASE_URL = "http://127.0.0.1:8000/"
     private const val PREFS = "AppPreferences"
     private const val KEY_TOKEN = "access_token"
 
@@ -53,7 +58,9 @@ object ApiClient {
     private val okHttp: OkHttpClient by lazy {
         OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
-            .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
+            // BASIC logs method, URL and status only. Never use BODY here: it prints request bodies,
+            // including passwords, to Logcat.
+            .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BASIC })
             .connectTimeout(15, TimeUnit.SECONDS)
             .readTimeout(60, TimeUnit.SECONDS)   // Gemini calls can take a few seconds
             .build()
