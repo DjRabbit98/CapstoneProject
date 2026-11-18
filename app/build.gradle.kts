@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android) apply false
@@ -105,4 +107,23 @@ dependencies {
 // KSP config
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
+}
+
+// Dev convenience: after every debug install, forward the emulator/device port 8000
+// to the laptop so BASE_URL http://127.0.0.1:8000/ reaches the FastAPI backend.
+// Equivalent to running `adb reverse tcp:8000 tcp:8000` by hand after each boot.
+tasks.register<Exec>("adbReverseBackend") {
+    val props = Properties()
+    val lp = rootProject.file("local.properties")
+    if (lp.exists()) lp.inputStream().use { props.load(it) }
+    val sdk = props.getProperty("sdk.dir") ?: System.getenv("ANDROID_HOME") ?: ""
+    val adbExe = listOf("$sdk/platform-tools/adb.exe", "$sdk/platform-tools/adb")
+        .map { file(it) }.firstOrNull { it.exists() }?.absolutePath ?: "adb"
+    commandLine(adbExe, "reverse", "tcp:8000", "tcp:8000")
+    isIgnoreExitValue = true
+}
+afterEvaluate {
+    // Android Studio's Run uses assembleDebug (it installs the APK itself); `gradlew installDebug` uses both.
+    tasks.named("assembleDebug") { finalizedBy("adbReverseBackend") }
+    tasks.named("installDebug") { finalizedBy("adbReverseBackend") }
 }

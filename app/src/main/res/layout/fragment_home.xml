@@ -104,7 +104,8 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="1,850"
+                                android:id="@+id/tvCaloriesRemaining"
+                                android:text="—"
                                 style="@style/TextDisplay"
                                 android:textColor="@color/colorPrimary" />
 
@@ -124,11 +125,13 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="450 kcal"
+                                android:id="@+id/tvCaloriesEaten"
+                                android:text="—"
                                 style="@style/TextBody"
                                 android:layout_marginBottom="4dp" />
 
                             <ProgressBar
+                                android:id="@+id/pbCalories"
                                 android:layout_width="100dp"
                                 android:layout_height="6dp"
                                 android:progress="30"
@@ -156,13 +159,14 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="@string/water_intake"
+                            android:text="Protein today"
                             style="@style/TextBody" />
 
                         <TextView
+                            android:id="@+id/tvProteinToday"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="4 / 8 cups"
+                            android:text="—"
                             style="@style/TextCaption"
                             android:textColor="@color/info" />
                     </LinearLayout>
@@ -234,11 +238,11 @@
                         android:layout_marginBottom="12dp" />
 
                     <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnOpenCoach"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/soon_tm"
-                        style="@style/ButtonStyle.Secondary"
-                        android:enabled="false" />
+                        android:text="Ask the coach"
+                        style="@style/ButtonStyle.Primary" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
         </LinearLayout>
