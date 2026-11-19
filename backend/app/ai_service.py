@@ -89,6 +89,20 @@ def today_context(day) -> str:
     )
 
 
+def week_context(days, workouts) -> str:
+    """Last-7-day summary so the coach can answer 'this week' questions. `days` = list of DaySummary
+    (oldest first), `workouts` = WorkoutHistoryOut."""
+    logged = [d for d in days if d.meals > 0]
+    avg_eaten = round(sum(d.kcal for d in logged) / len(logged)) if logged else None
+    t = workouts.totals
+    sessions = "; ".join(f"{w.date}: {w.name} ({w.duration_min} min, {w.workout_type})" for w in workouts.entries[:7]) or "none"
+    eaten_part = f"average {avg_eaten} kcal eaten per day over {len(logged)} logged day(s)" if avg_eaten else "no meals logged"
+    return (
+        f"Last 7 days: {eaten_part}; {t.sessions} workout(s), {t.minutes} min, ~{t.kcal_burned} kcal burned "
+        f"[{sessions}]."
+    )
+
+
 def _wrap_vendor_error(exc: Exception) -> HTTPException:
     # network, quota, bad key, etc. (planning report risk R4) -> clean 502, app keeps working
     log.exception("AI call failed (%s)", provider())

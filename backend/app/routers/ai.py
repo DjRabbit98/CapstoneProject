@@ -7,7 +7,7 @@ from ..models import Profile, User
 from ..nutrition import daily_calorie_target
 from ..schemas import ChatRequest, ChatResponse, EstimateOut, EstimateRequest, ProfileIn, RecommendRequest
 from ..security import get_optional_user
-from .log import _today, day_view
+from .log import _today, day_view, summary, workout_history
 
 router = APIRouter(prefix="/ai", tags=["ai"])
 
@@ -24,6 +24,7 @@ def _context(body_profile: ProfileIn | None, user: User | None, db: Session) -> 
     ctx = ai_service.profile_context(p, daily_calorie_target(p) if p else None)
     if user is not None:
         ctx += "\n" + ai_service.today_context(day_view(user, db, _today()))
+        ctx += "\n" + ai_service.week_context(summary(days=7, user=user, db=db), workout_history(days=7, user=user, db=db))
     return ctx
 
 
