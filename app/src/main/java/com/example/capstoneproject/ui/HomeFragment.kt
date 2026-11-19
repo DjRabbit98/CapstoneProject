@@ -99,7 +99,12 @@ class HomeFragment : Fragment() {
                     tvTodayStats?.text = if (target != null)
                         "Today: $eaten eaten • $burned burned • ${day.calories_remaining ?: 0} kcal left"
                     else
-                        "Today: ${day.meals.size} meals • $eaten kcal (set your profile for a target)"
+                        "No calorie target yet — tap here to finish your profile"
+                    tvTodayStats?.setOnClickListener(
+                        if (target == null) View.OnClickListener {
+                            try { findNavController().navigate(R.id.profileFragment) } catch (e: Exception) { }
+                        } else null
+                    )
 
                     tvCaloriesEaten?.text = if (burned > 0) "$eaten kcal (−$burned)" else "$eaten kcal"
                     tvProteinToday?.text = "${day.totals.protein_g.toInt()} g"

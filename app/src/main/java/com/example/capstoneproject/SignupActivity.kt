@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.example.capstoneproject.databinding.ActivitySignupBinding
 import com.example.capstoneproject.network.ApiClient
+import com.example.capstoneproject.network.LoginRequest
 import com.example.capstoneproject.network.RegisterRequest
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -50,8 +51,20 @@ class SignupActivity : AppCompatActivity() {
                         .putString("user_name", name)
                         .putString("email", email)
                         .apply()
-                    showSuccessMessage()
-                    navigateToLogin()
+                    // Step 2 of sign-up: log in straight away and collect the health profile,
+                    // so the account and its health data are created together.
+                    val login = ApiClient.api.login(LoginRequest(email = email, password = password))
+                    val token = login.body()?.access_token
+                    if (login.isSuccessful && token != null) {
+                        ApiClient.saveToken(token)
+                        getSharedPreferences("AppPreferences", MODE_PRIVATE).edit().putBoolean("isLoggedIn", true).apply()
+                        Toast.makeText(this@SignupActivity, "Account created! One more step.", Toast.LENGTH_SHORT).show()
+                        startActivity(Intent(this@SignupActivity, ProfileSetupActivity::class.java))
+                        finish()
+                    } else {
+                        showSuccessMessage()
+                        navigateToLogin()
+                    }
                 } else {
                     // 409 email already registered, 422 password policy
                     showError(ApiClient.errorMessage(response))
