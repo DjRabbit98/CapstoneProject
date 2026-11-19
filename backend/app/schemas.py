@@ -69,7 +69,7 @@ class ProfileOut(ProfileIn):
 
 # ---------- AI ----------
 class ChatTurn(BaseModel):
-    role: Literal["user", "assistant"]
+    role: Literal["user", "assistant", "model"]   # "model" = Gemini's name for assistant; normalised in ai_service
     text: str = Field(..., max_length=4000)
 
 

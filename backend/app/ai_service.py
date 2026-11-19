@@ -24,6 +24,14 @@ Rules you must always follow:
 - Respect the user's dietary preferences and allergies at all times; never include a listed allergen.
 - Be friendly, concise and practical. Use metric units and Australian spelling."""
 
+CHAT_STYLE = """Reply format for chat: be brief. At most 4 short sentences, or up to 5 one-line bullet points
+(about 80 words). No preamble, no headings, no bold. Give the single most useful answer rather than every
+option. Only go longer if the user explicitly asks for a full plan, recipe or detailed explanation."""
+
+# Output caps per call type. Chat is deliberately small so the coach stays snappy on a phone screen.
+CHAT_MAX_TOKENS = 350
+PLAN_MAX_TOKENS = 4096
+
 GROQ_URL = "https://api.groq.com/openai/v1/chat/completions"
 
 
@@ -88,13 +96,13 @@ def _wrap_vendor_error(exc: Exception) -> HTTPException:
 
 
 # ---------------------------------------------------------------- Groq (OpenAI-compatible)
-def _groq_generate(messages: list[dict], system: str, json_mode: bool) -> str:
+def _groq_generate(messages: list[dict], system: str, json_mode: bool, max_tokens: int) -> str:
     key = _require_key("GROQ_API_KEY")
     body = {
         "model": model_name(),
         "messages": [{"role": "system", "content": system}] + messages,
         "temperature": 0.7,
-        "max_tokens": 4096,
+        "max_tokens": max_tokens,
     }
     if json_mode:
         body["response_format"] = {"type": "json_object"}
@@ -116,7 +124,7 @@ def _groq_generate(messages: list[dict], system: str, json_mode: bool) -> str:
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
 
-def _gemini_generate(messages: list[dict], system: str, json_mode: bool) -> str:
+def _gemini_generate(messages: list[dict], system: str, json_mode: bool, max_tokens: int) -> str:
     key = _require_key("GEMINI_API_KEY")
     body = {
         "system_instruction": {"parts": [{"text": system}]},
@@ -124,7 +132,7 @@ def _gemini_generate(messages: list[dict], system: str, json_mode: bool) -> str:
             {"role": "model" if m["role"] == "assistant" else "user", "parts": [{"text": m["content"]}]}
             for m in messages
         ],
-        "generationConfig": {"temperature": 0.7, "maxOutputTokens": 4096},
+        "generationConfig": {"temperature": 0.7, "maxOutputTokens": max_tokens},
     }
     if json_mode:
         body["generationConfig"]["responseMimeType"] = "application/json"
@@ -137,10 +145,16 @@ def _gemini_generate(messages: list[dict], system: str, json_mode: bool) -> str:
     try:
         with urllib.request.urlopen(req, timeout=60) as resp:
             data = json.loads(resp.read())
-        parts = data["candidates"][0]["content"]["parts"]
+        cand = data["candidates"][0]
+        parts = cand.get("content", {}).get("parts", [])
         text = "".join(p.get("text", "") for p in parts)
     except Exception as exc:
         raise _wrap_vendor_error(exc) from exc
+    if not text.strip() and cand.get("finishReason") == "MAX_TOKENS" and max_tokens < PLAN_MAX_TOKENS:
+        # Newer Gemini models spend output tokens on internal reasoning first; a tight cap can
+        # leave no room for the visible answer. Retry once with the full budget.
+        log.warning("Gemini returned no text under a %d-token cap; retrying uncapped", max_tokens)
+        return _gemini_generate(messages, system, json_mode, PLAN_MAX_TOKENS)
     return text.strip()
 
 
@@ -171,18 +185,19 @@ def list_models() -> list[dict]:
     ]
 
 
-def _generate(messages: list[dict], system: str, json_mode: bool = False) -> str:
+def _generate(messages: list[dict], system: str, json_mode: bool = False, max_tokens: int = PLAN_MAX_TOKENS) -> str:
     """messages: OpenAI-style [{"role": "user"|"assistant", "content": str}, ...]"""
     if provider() == "groq":
-        return _groq_generate(messages, system, json_mode)
-    return _gemini_generate(messages, system, json_mode)
+        return _groq_generate(messages, system, json_mode, max_tokens)
+    return _gemini_generate(messages, system, json_mode, max_tokens)
 
 
 # ---------------------------------------------------------------- public API used by routers
 def chat(message: str, history: list, context: str) -> str:
-    messages = [{"role": t.role, "content": t.text} for t in history]
+    # "model" is Gemini's name for the assistant turn; accept it so older app builds keep working.
+    messages = [{"role": "assistant" if t.role in ("assistant", "model") else "user", "content": t.text} for t in history]
     messages.append({"role": "user", "content": message})
-    return _generate(messages, SAFETY_RULES + "\n\n" + context)
+    return _generate(messages, SAFETY_RULES + "\n\n" + CHAT_STYLE + "\n\n" + context, max_tokens=CHAT_MAX_TOKENS)
 
 
 MEAL_SCHEMA = """Return JSON only, shaped like:
