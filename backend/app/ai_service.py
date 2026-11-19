@@ -75,6 +75,20 @@ def profile_context(profile, calorie_target) -> str:
     return "User profile: " + json.dumps(known)
 
 
+def today_context(day) -> str:
+    """One line on what the user has eaten and trained today, so the coach can refer to it
+    ('you've already done your strength session, so...'). `day` is a DayLogOut; None = not logged in."""
+    if day is None:
+        return ""
+    meals = ", ".join(f"{m.name} ({m.kcal} kcal)" for m in day.meals) or "nothing logged yet"
+    workouts = ", ".join(f"{w.name} ({w.duration_min} min, ~{w.kcal_burned} kcal)" for w in day.workouts) or "none yet"
+    remaining = f"{day.calories_remaining} kcal remaining" if day.calories_remaining is not None else "no target set"
+    return (
+        f"Today so far ({day.date}): eaten {day.totals.kcal} kcal [{meals}]; "
+        f"workouts: {workouts}; {remaining}. Refer to this when it is relevant to the question."
+    )
+
+
 def _wrap_vendor_error(exc: Exception) -> HTTPException:
     # network, quota, bad key, etc. (planning report risk R4) -> clean 502, app keeps working
     log.exception("AI call failed (%s)", provider())

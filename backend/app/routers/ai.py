@@ -7,19 +7,24 @@ from ..models import Profile, User
 from ..nutrition import daily_calorie_target
 from ..schemas import ChatRequest, ChatResponse, EstimateOut, EstimateRequest, ProfileIn, RecommendRequest
 from ..security import get_optional_user
+from .log import _today, day_view
 
 router = APIRouter(prefix="/ai", tags=["ai"])
 
 
 def _context(body_profile: ProfileIn | None, user: User | None, db: Session) -> str:
-    """Profile sent in the request wins (app keeps it on-device); else the logged-in user's server profile."""
+    """Profile sent in the request wins (app keeps it on-device); else the logged-in user's server profile.
+    Logged-in users also get today's meals and workouts, so answers reflect what they have actually done."""
     if body_profile is not None:
         p = Profile(**body_profile.model_dump())
     elif user is not None:
         p = db.get(Profile, user.id)
     else:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "Send a profile in the request or log in first")
-    return ai_service.profile_context(p, daily_calorie_target(p) if p else None)
+    ctx = ai_service.profile_context(p, daily_calorie_target(p) if p else None)
+    if user is not None:
+        ctx += "\n" + ai_service.today_context(day_view(user, db, _today()))
+    return ctx
 
 
 @router.get("/models")

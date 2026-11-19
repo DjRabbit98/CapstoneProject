@@ -71,3 +71,20 @@ Android Studio, "Medium Phone API 37" emulator, backend in PyCharm on the same l
 | 31 | Wrong password from the app | `[TODO: confirm]` red "Incorrect email or password" under the field | |
 
 **Network troubleshooting log (for the user manual / Challenges):** the emulator could not reach the host at `10.0.2.2` and could not load any website — `SocketTimeoutException` after 15 s. Not fixed by: binding the backend to `0.0.0.0`, quitting NordVPN, turning Windows Firewall off, cold-booting the emulator. Root cause was that Android Studio's HTTP proxy was on **Auto-detect**, which handed the emulator a dead system proxy; even after switching to No proxy the guest network stayed down. Resolution: point the app at `127.0.0.1` and tunnel with `adb reverse` — independent of guest networking. Also found and fixed during this: the OkHttp logging interceptor at `Level.BODY` was printing the sign-up password to Logcat (now `BASIC`).
+
+
+## Workout log endpoint tests — 19 Nov 2026 (Dylan)
+Run against a scratch SQLite DB with a fresh user (profile: 27 M, 180 cm, 85 kg, moderate, weight loss → target 2360). Client request 19 Nov: meals, workouts and plans "intertwined".
+
+| # | Test | Result | Status |
+|---|---|---|---|
+| 32 | `POST /log/workouts` from a plan day, no kcal given (strength, 30 min, source `ai_plan`, plan_day 1) | 201; `kcal_burned` 212 = 5.0 MET × 85 kg × 0.5 h | ✅ |
+| 33 | `POST /log/workouts` manual with `kcal_burned: 150` (walking, 40 min) | 201; user's value kept (150), not overwritten by the estimate | ✅ |
+| 34 | `POST /log/workouts` with `workout_type: "swimming"` | 422 (not in the allowed list) | ✅ |
+| 35 | `GET /log/meals` after one 650 kcal meal + the two workouts | 200; `calories_burned` 362, `net_kcal` 288, `calories_remaining` 2072 (= 2360 − 650 + 362); `workouts` has 2 entries | ✅ |
+| 36 | `GET /log/workouts?days=7` | 200; newest first; totals sessions 2, minutes 70, kcal_burned 362 | ✅ |
+| 37 | `GET /log/summary?days=2` | 200; today's row has `kcal_burned` 362 and `workouts` 2 alongside meals | ✅ |
+| 38 | `DELETE /log/workouts/{id}` twice | 204 then 404 | ✅ |
+| 39 | `GET /log/workouts` without a token | 401 | ✅ |
+| 40 | AI coach context for a logged-in user | includes "Today so far: eaten 650 kcal [Chicken wrap]; workouts: Day 1 - Full Body Strength (30 min, ~212 kcal); 1922 kcal remaining" | ✅ |
+| 41 | `POST /ai/chat` follow-up with history role `model` (the 422 reported 19 Nov) | 200 with the fix; replies now 50–90 words | ✅ |
