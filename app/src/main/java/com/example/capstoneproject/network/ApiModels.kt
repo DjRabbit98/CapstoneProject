@@ -148,6 +148,27 @@ data class WeightHistoryOut(
     val change_kg: Double?
 )
 
+data class AnalyseMealRequest(val image_base64: String, val mime_type: String = "image/jpeg", val caption: String? = null)
+
+data class SuggestedSession(val workout_type: String, val duration_min: Int)
+data class TrainingAdjustment(val summary: String?, val suggested_session: SuggestedSession?)
+
+/** Photo analysis result: estimate + coaching verdict against today's budget and training. */
+data class AnalyseMealOut(
+    val name: String,
+    val portion_assumption: String?,
+    val kcal: Int,
+    val protein_g: Double,
+    val carbs_g: Double,
+    val fat_g: Double,
+    val confidence: String,
+    val verdict: String,            // good_to_go | smaller_portion | balance_it | enjoy_as_treat
+    val reason: String,
+    val rest_of_day: String?,
+    val training_adjustment: TrainingAdjustment?,
+    val source: String = "photo"
+)
+
 data class EstimateRequest(val description: String, val portion: String? = null)
 
 data class EstimateOut(

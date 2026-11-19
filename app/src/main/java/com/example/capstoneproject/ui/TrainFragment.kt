@@ -61,6 +61,18 @@ class TrainFragment : Fragment() {
         loadWeek()
     }
 
+    override fun onResume() {
+        super.onResume()
+        // A suggestion handed over from the meal-photo analysis ("plan a 30-min walk to balance dinner").
+        val prefs = requireContext().getSharedPreferences("AppPreferences", 0)
+        prefs.getString("pending_training_request", null)?.let { req ->
+            prefs.edit().remove("pending_training_request").apply()
+            binding.etPlanRequest.setText(req)
+            binding.chip1.isChecked = true
+            toast("Suggestion from your meal photo added — tap Build new routine")
+        }
+    }
+
     // ---------- this week ----------
 
     private fun loadWeek() {

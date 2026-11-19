@@ -43,6 +43,10 @@ interface WellnessApi {
     @POST("ai/estimate")
     suspend fun estimate(@Body body: EstimateRequest): Response<EstimateOut>
 
+    /** Meal photo -> identification, nutrition estimate and a coaching verdict (login required). */
+    @POST("ai/analyse-meal")
+    suspend fun analyseMeal(@Body body: AnalyseMealRequest): Response<AnalyseMealOut>
+
     // ---- food log (token required) ----
     @POST("log/meals")
     suspend fun addMeal(@Body body: MealLogIn): Response<MealLogOut>
