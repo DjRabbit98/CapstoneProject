@@ -17,7 +17,10 @@ was touched. Local-only, git-ignored files that were modified are listed separat
 | `bd75b87` | Test report for the client-feedback round + 9 emulator screenshots | `docs/TEST_REPORT_2026-11-19.md`, `docs/screenshots/2026-11-19-signup-profile/*.jpg` |
 | `89affa0` | Progress tab: 7-day eaten vs burned bar chart with target line, weight trend line, weigh-in entry, summary tiles (two Canvas chart views, no new dependency); Profile header name from `/auth/me` | `app/.../ui/ProgressFragment.kt`, `app/.../ui/charts/{WeekBarChartView,WeightLineChartView}.kt` (new), `app/.../res/layout/fragment_progress.xml`, `app/.../ui/ProfileFragment.kt` |
 | `91629bf` | Coach context now includes the last 7 days (average kcal eaten, workouts) | `backend/app/ai_service.py`, `backend/app/routers/ai.py` |
-| (this) | Test report tests T14–T19 + 5 more screenshots (Progress, Training, Food log, Coach, Login) | `docs/TEST_REPORT_2026-11-19.md`, `docs/screenshots/2026-11-19-progress-and-screens/*.jpg` |
+| `a4d9eda` | Test report tests T14–T19 + 5 more screenshots (Progress, Training, Food log, Coach, Login) | `docs/TEST_REPORT_2026-11-19.md`, `docs/screenshots/2026-11-19-progress-and-screens/*.jpg` |
+| `cec8400` | Backend `POST /ai/analyse-meal`: meal photo → identification, nutrition estimate, coaching verdict, rest-of-day and training adjustment (Gemini inline image; Groq returns 503 for photos) | `backend/app/ai_service.py`, `backend/app/schemas.py`, `backend/app/routers/ai.py` |
+| `d56dc92` | App: Take photo / From gallery on the Food log tab, result card with verdict chip, "Log this meal", "Plan a N-min session" (hands off to Training), "Adjust the rest of today's meal plan"; CAMERA permission | `AndroidManifest.xml`, `network/{ApiModels,WellnessApi}.kt`, `ui/{MealFragment,TrainFragment}.kt`, `res/layout/fragment_meal.xml` |
+| (this) | TESTING.md tests 43–47; photo-analysis screenshots | `backend/TESTING.md`, `docs/screenshots/2026-11-19-photo-analysis/*.jpg` |
 
 Local-only files touched on 19 Nov (not committed): `backend/wellness.db` — throwaway test users
 `coachtest<timestamp>@test.com` (meal + workout), `tess@d.comm` (profile) and `sam@d.com` (no profile), created

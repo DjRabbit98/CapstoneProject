@@ -89,3 +89,14 @@ Run against a scratch SQLite DB with a fresh user (profile: 27 M, 180 cm, 85 kg,
 | 40 | AI coach context for a logged-in user | includes "Today so far: eaten 650 kcal [Chicken wrap]; workouts: Day 1 - Full Body Strength (30 min, ~212 kcal); 1922 kcal remaining" | ✅ |
 | 41 | `POST /ai/chat` follow-up with history role `model` (the 422 reported 19 Nov) | 200 with the fix; replies now 50–90 words | ✅ |
 | 42 | AI coach context for a logged-in user includes the last 7 days | "Last 7 days: average N kcal eaten per day over D logged day(s); S workout(s), M min, ~K kcal burned [dated list]" — coach answered "Did I train enough this week?" with "4 workouts totaling 150 minutes over the last 7 days" | ✅ |
+
+## Meal photo analysis — 19 Nov 2026 evening (Dylan / Claude)
+`POST /ai/analyse-meal`, logged in as `sam@d.com` (650 kcal eaten today, 1350 left, 4 workouts this week). Test image: NCI "Good Food Display" (public domain), resized to 1024×683 JPEG (185 KB) in the browser — the same resize the app does.
+
+| # | Test | Result | Status |
+|---|---|---|---|
+| 43 | Photo + caption "dinner" | 200 in 3.5 s. name "Assorted whole foods spread (turkey, fish, vegetables and grains)", 850 kcal / 65 P / 75 C / 32 F, medium confidence, verdict `balance_it`, reason cites "leaving you with 500 kcal … 2000 kcal weight-loss target", training: "No changes are needed" | ✅ |
+| 44 | Same photo, caption "I'm going to eat all of this myself tonight, big birthday dinner" | 2800 kcal, verdict `enjoy_as_treat`, reason coaching tone ("Happy birthday… enjoy a sensible portion"), training summary "No extra training is needed to compensate… return to your normal routine tomorrow", optional suggested session walking 30 min | ✅ |
+| 45 | Non-food image (emulator virtual-camera scene) via the app's Take photo | name "not food", 0 kcal, low confidence, reason "This image doesn't appear to show any food, so we can't log it" | ✅ |
+| 46 | Camera permission flow on device | System prompt shown on first tap; "While using the app" → camera opens; capture → confirm → analysis | ✅ |
+| 47 | `analyse-meal` without a token | 401 (login required: the verdict depends on the user's day) | ✅ (by design, Depends(get_current_user)) |
