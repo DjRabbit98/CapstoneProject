@@ -152,14 +152,20 @@ def _groq_generate(messages: list[dict], system: str, json_mode: bool, max_token
 GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
 
-def _gemini_generate(messages: list[dict], system: str, json_mode: bool, max_tokens: int) -> str:
+def _gemini_generate(messages: list[dict], system: str, json_mode: bool, max_tokens: int,
+                     image: tuple[str, str] | None = None) -> str:
+    """image = (mime_type, base64_data) attached to the last user turn (meal photo analysis)."""
     key = _require_key("GEMINI_API_KEY")
+    contents = [
+        {"role": "model" if m["role"] == "assistant" else "user", "parts": [{"text": m["content"]}]}
+        for m in messages
+    ]
+    if image is not None:
+        mime, data = image
+        contents[-1]["parts"].append({"inline_data": {"mime_type": mime, "data": data}})
     body = {
         "system_instruction": {"parts": [{"text": system}]},
-        "contents": [
-            {"role": "model" if m["role"] == "assistant" else "user", "parts": [{"text": m["content"]}]}
-            for m in messages
-        ],
+        "contents": contents,
         "generationConfig": {"temperature": 0.7, "maxOutputTokens": max_tokens},
     }
     if json_mode:
@@ -182,7 +188,7 @@ def _gemini_generate(messages: list[dict], system: str, json_mode: bool, max_tok
         # Newer Gemini models spend output tokens on internal reasoning first; a tight cap can
         # leave no room for the visible answer. Retry once with the full budget.
         log.warning("Gemini returned no text under a %d-token cap; retrying uncapped", max_tokens)
-        return _gemini_generate(messages, system, json_mode, PLAN_MAX_TOKENS)
+        return _gemini_generate(messages, system, json_mode, PLAN_MAX_TOKENS, image)
     return text.strip()
 
 
@@ -213,11 +219,15 @@ def list_models() -> list[dict]:
     ]
 
 
-def _generate(messages: list[dict], system: str, json_mode: bool = False, max_tokens: int = PLAN_MAX_TOKENS) -> str:
+def _generate(messages: list[dict], system: str, json_mode: bool = False, max_tokens: int = PLAN_MAX_TOKENS,
+              image: tuple[str, str] | None = None) -> str:
     """messages: OpenAI-style [{"role": "user"|"assistant", "content": str}, ...]"""
     if provider() == "groq":
+        if image is not None:
+            raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE,
+                                "Photo analysis needs the Gemini provider; describe the meal in words instead")
         return _groq_generate(messages, system, json_mode, max_tokens)
-    return _gemini_generate(messages, system, json_mode, max_tokens)
+    return _gemini_generate(messages, system, json_mode, max_tokens, image)
 
 
 # ---------------------------------------------------------------- public API used by routers
@@ -270,3 +280,46 @@ def estimate_meal(description: str, portion: str | None) -> dict:
     except json.JSONDecodeError:
         log.warning("AI returned non-JSON estimate: %.200s", raw)
         raise HTTPException(status.HTTP_502_BAD_GATEWAY, "AI returned an unreadable estimate, please try again")
+
+
+ANALYSE_SCHEMA = """Return JSON only, shaped like:
+{"name":"","portion_assumption":"","kcal":0,"protein_g":0,"carbs_g":0,"fat_g":0,
+ "confidence":"low|medium|high",
+ "verdict":"good_to_go|smaller_portion|balance_it|enjoy_as_treat",
+ "reason":"",
+ "rest_of_day":"",
+ "training_adjustment":{"summary":"","suggested_session":{"workout_type":"walking|running|cardio|strength|stretching|other","duration_min":0}}}
+Rules:
+- Identify the food in the photo (use the caption if given). Estimate ONE typical serving as shown, using
+  mainstream reference values (e.g. Australian Food Composition Database). State the portion you assumed.
+- "verdict" and "reason" must use the user's remaining calories for today, their goal and today's training from
+  the context. Tone: coaching, never shaming. Food is not "bad"; the question is how it fits the day.
+  good_to_go = fits comfortably; smaller_portion = fits if ~2/3 of it; balance_it = heavy for the remaining budget,
+  suggest how to balance it (lighter next meal, a walk); enjoy_as_treat = occasional, enjoy it and move on.
+- "rest_of_day": one sentence on what the next meal(s) today could look like given this meal (protein/veg focus,
+  lighter dinner, etc.).
+- "training_adjustment.summary": one sentence; if nothing needs to change say so. "suggested_session" is a single
+  optional extra or modified session for today or tomorrow (null if not needed). Never suggest exercise as
+  punishment, never more than 60 minutes extra, never below the calorie floor.
+- Integers for kcal and duration, one decimal for grams. If the photo is not food, set name to "not food",
+  kcal 0, confidence "low", verdict "good_to_go" and explain in reason."""
+
+ANALYSE_MAX_TOKENS = 700
+
+
+def analyse_meal(image_mime: str, image_b64: str, caption: str | None, context: str) -> dict:
+    """Photo of a meal -> what it is, rough nutrition, and a personal verdict against today's budget and
+    training (client request 19 Nov: camera feature with 'fine - here's how to balance it' guidance)."""
+    prompt = "Analyse the meal in this photo." + (f" The user says: {caption}." if caption else "")
+    raw = _generate(
+        [{"role": "user", "content": prompt}],
+        SAFETY_RULES + "\n\n" + ANALYSE_SCHEMA + "\n\n" + context,
+        json_mode=True,
+        max_tokens=ANALYSE_MAX_TOKENS,
+        image=(image_mime, image_b64),
+    )
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        log.warning("AI returned non-JSON meal analysis: %.200s", raw)
+        raise HTTPException(status.HTTP_502_BAD_GATEWAY, "AI returned an unreadable analysis, please try again")

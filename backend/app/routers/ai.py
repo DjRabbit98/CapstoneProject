@@ -5,8 +5,8 @@ from .. import ai_service
 from ..database import get_db
 from ..models import Profile, User
 from ..nutrition import daily_calorie_target
-from ..schemas import ChatRequest, ChatResponse, EstimateOut, EstimateRequest, ProfileIn, RecommendRequest
-from ..security import get_optional_user
+from ..schemas import AnalyseMealOut, AnalyseMealRequest, ChatRequest, ChatResponse, EstimateOut, EstimateRequest, ProfileIn, RecommendRequest
+from ..security import get_current_user, get_optional_user
 from .log import _today, day_view, summary, workout_history
 
 router = APIRouter(prefix="/ai", tags=["ai"])
@@ -43,6 +43,20 @@ def chat(body: ChatRequest, user: User | None = Depends(get_optional_user), db: 
 @router.post("/recommend")
 def recommend(body: RecommendRequest, user: User | None = Depends(get_optional_user), db: Session = Depends(get_db)):
     return ai_service.recommend(body.kind, body.days, body.request, _context(body.profile, user, db))
+
+
+@router.post("/analyse-meal", response_model=AnalyseMealOut)
+def analyse_meal(body: AnalyseMealRequest, user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+    """Photo of a meal -> identification, nutrition estimate and a coaching verdict ('fine - here's how to
+    balance it') against the user's remaining calories, goal and training today. Login required because the
+    verdict depends on the user's day. The result is an estimate the user confirms before logging (source=photo)."""
+    data = ai_service.analyse_meal(body.mime_type, body.image_base64, body.caption, _context(None, user, db))
+    # Tolerate a null/empty suggested_session from the model.
+    ta = data.get("training_adjustment") or {}
+    if not ta.get("suggested_session") or not ta["suggested_session"].get("duration_min"):
+        ta["suggested_session"] = None
+    data["training_adjustment"] = ta or {"summary": "No change needed."}
+    return AnalyseMealOut(**data)
 
 
 @router.post("/estimate", response_model=EstimateOut)

@@ -214,6 +214,37 @@ class EstimateRequest(BaseModel):
     portion: str | None = Field(None, max_length=100, description='optional, e.g. "1 bowl", "250 g"')
 
 
+class AnalyseMealRequest(BaseModel):
+    image_base64: str = Field(..., min_length=100, max_length=6_000_000, description="JPEG/PNG, base64 (app resizes to ~1024 px)")
+    mime_type: Literal["image/jpeg", "image/png", "image/webp"] = "image/jpeg"
+    caption: str | None = Field(None, max_length=200, description='optional, e.g. "my lunch, large bowl"')
+
+
+class SuggestedSession(BaseModel):
+    workout_type: WorkoutType = "walking"
+    duration_min: int = Field(..., ge=5, le=60)
+
+
+class TrainingAdjustment(BaseModel):
+    summary: str
+    suggested_session: SuggestedSession | None = None
+
+
+class AnalyseMealOut(BaseModel):
+    name: str
+    portion_assumption: str = ""
+    kcal: int
+    protein_g: float
+    carbs_g: float
+    fat_g: float
+    confidence: Literal["low", "medium", "high"]
+    verdict: Literal["good_to_go", "smaller_portion", "balance_it", "enjoy_as_treat"]
+    reason: str
+    rest_of_day: str = ""
+    training_adjustment: TrainingAdjustment
+    source: str = "photo"
+
+
 class EstimateOut(BaseModel):
     name: str
     kcal: int
