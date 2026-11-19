@@ -13,10 +13,12 @@ was touched. Local-only, git-ignored files that were modified are listed separat
 | `1c0cec9` | Backend workout log (`/log/workouts`), MET-based kcal estimate, food + training combined in `GET /log/meals` and `/log/summary`, "today so far" context for the coach; tests 32–41 | `backend/app/{models,nutrition,schemas,ai_service}.py`, `backend/app/routers/{log,ai}.py`, `backend/README.md`, `backend/TESTING.md` |
 | `acf2779` | App: Training "This week" + manual workout log + "Mark as done" on plan days; Home and Food log show eaten / burned / remaining | `app/.../network/{ApiModels,WellnessApi}.kt`, `app/.../ui/{TrainFragment,HomeFragment,MealFragment}.kt`, `app/.../res/layout/{fragment_train,fragment_home}.xml` |
 | `16c6e4c` | App: health profile collected as step 2 of sign-up (`ProfileSetupActivity`), auto-login after register, Home nudge when no target | `app/.../ProfileSetupActivity.kt` (new), `app/.../res/layout/activity_profile_setup.xml` (new), `AndroidManifest.xml`, `SignupActivity.kt`, `ui/HomeFragment.kt` |
-| (this) | Added this change log | `docs/CHANGELOG.md` |
+| `38762e0` | Added this change log | `docs/CHANGELOG.md` |
+| (this) | Test report for the client-feedback round + 9 emulator screenshots | `docs/TEST_REPORT_2026-11-19.md`, `docs/screenshots/2026-11-19-signup-profile/*.jpg` |
 
-Local-only files touched on 19 Nov (not committed): `backend/wellness.db` — one throwaway test user
-`coachtest<timestamp>@test.com` with a meal and a workout, created while testing; no demo accounts changed.
+Local-only files touched on 19 Nov (not committed): `backend/wellness.db` — throwaway test users
+`coachtest<timestamp>@test.com` (meal + workout), `tess@d.comm` (profile) and `sam@d.com` (no profile), created
+while testing; no demo accounts changed. The emulator was left logged in as `sam@d.com`.
 Temporary `*.patch` files were copied into the repo root to apply each commit and deleted straight after.
 
 ## 17 Nov 2026 — branch `batch2-screens` (merged as PR #4)
