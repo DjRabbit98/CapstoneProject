@@ -27,11 +27,26 @@ The three client requests received 19 Nov:
 | T12 | Nudge opens Profile | Tap the nudge line | Profile tab opens | Profile tab with empty form and "Fill in your profile and save to calculate" (09) | Pass |
 | T13 | "Mark as done" on a plan day | Build 1-day plan → Mark as done | Logged with source `ai_plan` | Button renders under each day card; the API path is covered by T3 (test 32). Not clicked on-device this round because the button sits below the fold and the emulator cannot be scrolled from the automation tooling | Not run on device |
 
+## Evening session — Progress tab and screenshot pass (build `89affa0` + backend `91629bf`)
+
+Screenshots in `docs/screenshots/2026-11-19-progress-and-screens/`.
+
+| # | Test | Steps | Expected | Actual | Result |
+|---|---|---|---|---|---|
+| T14 | Progress tab, empty account | Open Progress as `sam@d.com` with no data | Tiles 0 / — / 0, empty-state captions, no crash | As expected | Pass |
+| T15 | Progress tab with a week of data | Seeded 7 days of meals, 4 workouts and 3 weigh-ins for `sam@d.com` via the API; reopen Progress | Tiles, grouped bars with target line, weight line, start/current/change | "4 workouts • 1,825 avg kcal • 1,039 burned"; bars Fri–Thu with "target 2000" dashed line; note "7 days logged • average net 1,677 kcal, 323 under your target"; weight 86 → 85.1 kg, −0.9 kg, 3-point line (10) | Pass |
+| T16 | Weigh-in updates the profile weight | After the seeded weigh-ins, open Profile | Weight field shows the latest weigh-in | 85.1 kg shown | Pass |
+| T17 | Coach answers "this week" questions | Ask "Did I train enough this week?" then follow up "and this week" | Uses the 7-day history, follow-up keeps context | Before the fix: "I don't have your activity history for the rest of the week". After adding the 7-day context (`91629bf`): "You've logged 4 workouts totaling 150 minutes over the last 7 days…" (13) | Pass (after fix) |
+| T18 | Profile header name for older accounts | Open Profile | Name from `/auth/me` | "sam" / sam@d.com shown (account created before the local cache existed) | Pass |
+| T19 | Weigh-in entry from the app | Progress → Today's weight → Log | Row appears, chart updates | Not clicked on device — the field is below the fold and the emulator can't be scrolled from the tooling; `POST /log/weight` is covered by TESTING.md test 24–26 | Not run on device |
+
+Screenshot set for the manual/poster now covers: Login (14), Sign-up (02–03), About you (04–05), Dashboard (01, 06, 08), Training (11), Food log (12), AI Coach (13), Progress (10), Profile (07, 09).
+
 ## Observations / minor issues
 - Gemini free tier returned one 503 "high demand" during Tuesday's testing; the app shows a retry message. Not seen today.
 - `Save and continue` with an incomplete form shows a toast telling the user which fields are needed, or to Skip — not separately screenshotted.
 - The Profile tab header now shows the sign-up name ("tess") because the sign-up stores `user_name`; existing accounts created before this change still show "Username" until they re-register or we read the name from `/auth/me` (small follow-up).
-- Test accounts created in the local `wellness.db` today: `tess@d.comm`, `sam@d.com`, `coachtest<timestamp>@test.com`. Demo accounts untouched. The emulator was left logged in as `sam`.
+- Test accounts created in the local `wellness.db` today: `tess@d.comm`, `sam@d.com` (now holds 7 seeded days of meals/workouts/weigh-ins for the Progress screenshots), `coachtest<timestamp>@test.com`. Demo accounts untouched. The emulator was left on the Login screen, logged out.
 
 ## Verdict
-All three client items are implemented and verified end-to-end on the emulator against the live backend, except T13 which is verified at the API level only. Ready for PR to `Melonistt/main`; the backend needs Stop + Rerun after merge (new `workout_logs` table).
+All three client items are implemented and verified end-to-end on the emulator against the live backend, and the Progress tab closes the last instructor UI item. T13 (Mark as done) and T19 (weigh-in entry) are verified at the API level only and are on Dylan's tap-test list before the `v1.0` tag. Ready for PR to `Melonistt/main`; the backend needs Stop + Rerun after merge (new `workout_logs` table).

@@ -14,11 +14,15 @@ was touched. Local-only, git-ignored files that were modified are listed separat
 | `acf2779` | App: Training "This week" + manual workout log + "Mark as done" on plan days; Home and Food log show eaten / burned / remaining | `app/.../network/{ApiModels,WellnessApi}.kt`, `app/.../ui/{TrainFragment,HomeFragment,MealFragment}.kt`, `app/.../res/layout/{fragment_train,fragment_home}.xml` |
 | `16c6e4c` | App: health profile collected as step 2 of sign-up (`ProfileSetupActivity`), auto-login after register, Home nudge when no target | `app/.../ProfileSetupActivity.kt` (new), `app/.../res/layout/activity_profile_setup.xml` (new), `AndroidManifest.xml`, `SignupActivity.kt`, `ui/HomeFragment.kt` |
 | `38762e0` | Added this change log | `docs/CHANGELOG.md` |
-| (this) | Test report for the client-feedback round + 9 emulator screenshots | `docs/TEST_REPORT_2026-11-19.md`, `docs/screenshots/2026-11-19-signup-profile/*.jpg` |
+| `bd75b87` | Test report for the client-feedback round + 9 emulator screenshots | `docs/TEST_REPORT_2026-11-19.md`, `docs/screenshots/2026-11-19-signup-profile/*.jpg` |
+| `89affa0` | Progress tab: 7-day eaten vs burned bar chart with target line, weight trend line, weigh-in entry, summary tiles (two Canvas chart views, no new dependency); Profile header name from `/auth/me` | `app/.../ui/ProgressFragment.kt`, `app/.../ui/charts/{WeekBarChartView,WeightLineChartView}.kt` (new), `app/.../res/layout/fragment_progress.xml`, `app/.../ui/ProfileFragment.kt` |
+| `91629bf` | Coach context now includes the last 7 days (average kcal eaten, workouts) | `backend/app/ai_service.py`, `backend/app/routers/ai.py` |
+| (this) | Test report tests T14–T19 + 5 more screenshots (Progress, Training, Food log, Coach, Login) | `docs/TEST_REPORT_2026-11-19.md`, `docs/screenshots/2026-11-19-progress-and-screens/*.jpg` |
 
 Local-only files touched on 19 Nov (not committed): `backend/wellness.db` — throwaway test users
 `coachtest<timestamp>@test.com` (meal + workout), `tess@d.comm` (profile) and `sam@d.com` (no profile), created
-while testing; no demo accounts changed. The emulator was left logged in as `sam@d.com`.
+while testing; `sam@d.com` was then seeded with 7 days of meals, 4 workouts and 3 weigh-ins through the API for the
+Progress-tab screenshots. No demo accounts changed. The emulator was left on the Login screen.
 Temporary `*.patch` files were copied into the repo root to apply each commit and deleted straight after.
 
 ## 17 Nov 2026 — branch `batch2-screens` (merged as PR #4)

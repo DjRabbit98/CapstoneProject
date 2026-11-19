@@ -88,3 +88,4 @@ Run against a scratch SQLite DB with a fresh user (profile: 27 M, 180 cm, 85 kg,
 | 39 | `GET /log/workouts` without a token | 401 | ✅ |
 | 40 | AI coach context for a logged-in user | includes "Today so far: eaten 650 kcal [Chicken wrap]; workouts: Day 1 - Full Body Strength (30 min, ~212 kcal); 1922 kcal remaining" | ✅ |
 | 41 | `POST /ai/chat` follow-up with history role `model` (the 422 reported 19 Nov) | 200 with the fix; replies now 50–90 words | ✅ |
+| 42 | AI coach context for a logged-in user includes the last 7 days | "Last 7 days: average N kcal eaten per day over D logged day(s); S workout(s), M min, ~K kcal burned [dated list]" — coach answered "Did I train enough this week?" with "4 workouts totaling 150 minutes over the last 7 days" | ✅ |
