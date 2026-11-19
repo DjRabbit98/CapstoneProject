@@ -96,15 +96,46 @@ data class MealLogOut(
 
 data class DayTotals(val kcal: Int, val protein_g: Double, val carbs_g: Double, val fat_g: Double)
 
+data class WorkoutLogIn(
+    val name: String,
+    val workout_type: String = "other",      // walking | running | cardio | strength | stretching | other
+    val duration_min: Int,
+    val kcal_burned: Int? = null,            // null = server estimates from MET x weight x time
+    val source: String = "manual",           // manual | ai_plan
+    val plan_day: Int? = null,
+    val notes: String? = null,
+    val date: String? = null
+)
+
+data class WorkoutLogOut(
+    val id: String,
+    val date: String,
+    val name: String,
+    val workout_type: String,
+    val duration_min: Int,
+    val kcal_burned: Int,
+    val source: String,
+    val plan_day: Int?,
+    val notes: String?
+)
+
+data class WorkoutTotals(val sessions: Int, val minutes: Int, val kcal_burned: Int)
+
+data class WorkoutHistoryOut(val entries: List<WorkoutLogOut>, val totals: WorkoutTotals, val days: Int)
+
+/** One day, food and training together. calories_remaining = target - eaten + burned. */
 data class DayLogOut(
     val date: String,
     val meals: List<MealLogOut>,
     val totals: DayTotals,
+    val workouts: List<WorkoutLogOut> = emptyList(),
+    val calories_burned: Int = 0,
+    val net_kcal: Int = 0,
     val calorie_target: Int?,
     val calories_remaining: Int?
 )
 
-data class DaySummary(val date: String, val kcal: Int, val meals: Int)
+data class DaySummary(val date: String, val kcal: Int, val meals: Int, val kcal_burned: Int = 0, val workouts: Int = 0)
 
 data class WeightLogIn(val weight_kg: Double, val notes: String? = null, val date: String? = null)
 

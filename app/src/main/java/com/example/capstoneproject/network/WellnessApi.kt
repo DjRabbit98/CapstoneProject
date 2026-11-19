@@ -58,6 +58,17 @@ interface WellnessApi {
     @GET("log/summary")
     suspend fun summary(@Query("days") days: Int = 7): Response<List<DaySummary>>
 
+    // ---- workouts ----
+    @POST("log/workouts")
+    suspend fun addWorkout(@Body body: WorkoutLogIn): Response<WorkoutLogOut>
+
+    /** Sessions in the last N days, newest first, with totals. */
+    @GET("log/workouts")
+    suspend fun workoutHistory(@Query("days") days: Int = 7): Response<WorkoutHistoryOut>
+
+    @DELETE("log/workouts/{id}")
+    suspend fun deleteWorkout(@Path("id") id: String): Response<Unit>
+
     // ---- weight / progress ----
     @POST("log/weight")
     suspend fun addWeight(@Body body: WeightLogIn): Response<WeightLogOut>

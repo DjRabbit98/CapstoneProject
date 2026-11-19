@@ -74,10 +74,12 @@ class MealFragment : Fragment() {
                     return@launch
                 }
                 val t = day.totals
-                val target = day.calorie_target?.let { " of $it kcal target" } ?: ""
-                binding.tvDayTotals.text =
-                    "Today: ${t.kcal} kcal$target • ${t.protein_g.roundToInt()}g protein • " +
-                        "${t.carbs_g.roundToInt()}g carbs • ${t.fat_g.roundToInt()}g fat"
+                val line1 = if (day.calorie_target != null)
+                    "Today: ${t.kcal} eaten − ${day.calories_burned} burned = ${day.net_kcal} net • ${day.calories_remaining} kcal left of ${day.calorie_target}"
+                else
+                    "Today: ${t.kcal} kcal eaten • ${day.calories_burned} burned (set your profile for a target)"
+                binding.tvDayTotals.text = line1 +
+                    "\n${t.protein_g.roundToInt()}g protein • ${t.carbs_g.roundToInt()}g carbs • ${t.fat_g.roundToInt()}g fat"
 
                 binding.llTodayMeals.removeAllViews()
                 if (day.meals.isEmpty()) {
@@ -101,6 +103,28 @@ class MealFragment : Fragment() {
                         }
                     }
                     binding.llTodayMeals.addView(row)
+                }
+                // Training logged today, so the food log reflects the whole day.
+                if (day.workouts.isNotEmpty()) {
+                    binding.llTodayMeals.addView(caption("Workouts today"))
+                    for (w in day.workouts) {
+                        val row = inflateRow(
+                            title = w.name,
+                            sub = "${w.duration_min} min • ${w.workout_type}" + if (w.source == "ai_plan") " • from plan" else "",
+                            kcal = "−${w.kcal_burned} kcal",
+                            action = "Delete"
+                        ) { btn ->
+                            btn.isEnabled = false
+                            viewLifecycleOwner.lifecycleScope.launch {
+                                try {
+                                    val r = ApiClient.api.deleteWorkout(w.id)
+                                    if (r.isSuccessful) loadToday() else toast(ApiClient.errorMessage(r))
+                                } catch (e: IOException) { toast("Can't reach the server") }
+                                finally { if (isAdded) btn.isEnabled = true }
+                            }
+                        }
+                        binding.llTodayMeals.addView(row)
+                    }
                 }
             } catch (e: IOException) {
                 binding.tvDayTotals.text = "Today: can't reach the server"
