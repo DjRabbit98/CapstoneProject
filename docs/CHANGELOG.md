@@ -1,0 +1,40 @@
+# Change log — what was changed, when, and by whom
+
+Every entry below corresponds to a git commit on the named branch; `git log` has the full message.
+Entries marked (Claude) were written by Claude with Dylan directing and reviewing; all were applied to
+Dylan's laptop (`C:\Users\Dylan.UniLaptop\Documents\Uni\CapstoneProject`) and nothing outside that folder
+was touched. Local-only, git-ignored files that were modified are listed separately.
+
+## 19 Nov 2026 — branch `boss-fixes` (client feedback round)
+
+| Commit | Change | Files |
+|---|---|---|
+| `abd0d1a` | AI coach: concise replies (≤4 sentences / ~80 words, 350-token cap); fix 422 on follow-up messages (app sent role `model`, backend expected `assistant`) | `backend/app/ai_service.py`, `backend/app/schemas.py`, `app/.../ui/CoachFragment.kt` |
+| `1c0cec9` | Backend workout log (`/log/workouts`), MET-based kcal estimate, food + training combined in `GET /log/meals` and `/log/summary`, "today so far" context for the coach; tests 32–41 | `backend/app/{models,nutrition,schemas,ai_service}.py`, `backend/app/routers/{log,ai}.py`, `backend/README.md`, `backend/TESTING.md` |
+| `acf2779` | App: Training "This week" + manual workout log + "Mark as done" on plan days; Home and Food log show eaten / burned / remaining | `app/.../network/{ApiModels,WellnessApi}.kt`, `app/.../ui/{TrainFragment,HomeFragment,MealFragment}.kt`, `app/.../res/layout/{fragment_train,fragment_home}.xml` |
+| `16c6e4c` | App: health profile collected as step 2 of sign-up (`ProfileSetupActivity`), auto-login after register, Home nudge when no target | `app/.../ProfileSetupActivity.kt` (new), `app/.../res/layout/activity_profile_setup.xml` (new), `AndroidManifest.xml`, `SignupActivity.kt`, `ui/HomeFragment.kt` |
+| (this) | Added this change log | `docs/CHANGELOG.md` |
+
+Local-only files touched on 19 Nov (not committed): `backend/wellness.db` — one throwaway test user
+`coachtest<timestamp>@test.com` with a meal and a workout, created while testing; no demo accounts changed.
+Temporary `*.patch` files were copied into the repo root to apply each commit and deleted straight after.
+
+## 17 Nov 2026 — branch `batch2-screens` (merged as PR #4)
+
+| Commit | Change |
+|---|---|
+| `78cec09` | Profile, AI Coach, Train and Meal screens wired to the backend |
+| `c623cc3` | Keyboard insets fix, `adbReverseBackend` Gradle task, Home card wired, markdown stripped from coach replies |
+
+Local-only: `backend/wellness.db` — profile set for `dylan_demo@hotmail.com`; `dylan@demo.com`'s profile was
+briefly overwritten by mistake and restored to its original values within a minute.
+
+## 15 Nov 2026 — branch `food-log` (merged as PR #3)
+
+`f20566f` app connects via `adb reverse` (127.0.0.1), request bodies no longer logged · `577b9d7` README/TESTING
+updates · `508a988` logout clears token · `b6dbb18` app network layer for `/log` and `/ai/estimate`, docs drafts.
+
+## Earlier
+
+`PR #1` FastAPI backend (auth, profile, Gemini coach) · `PR #2` Login/Sign Up wired to the backend, Groq
+provider, Gemini over REST, `/ai/models`.
