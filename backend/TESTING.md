@@ -100,3 +100,9 @@ Run against a scratch SQLite DB with a fresh user (profile: 27 M, 180 cm, 85 kg,
 | 45 | Non-food image (emulator virtual-camera scene) via the app's Take photo | name "not food", 0 kcal, low confidence, reason "This image doesn't appear to show any food, so we can't log it" | ✅ |
 | 46 | Camera permission flow on device | System prompt shown on first tap; "While using the app" → camera opens; capture → confirm → analysis | ✅ |
 | 47 | `analyse-meal` without a token | 401 (login required: the verdict depends on the user's day) | ✅ (by design, Depends(get_current_user)) |
+
+## Automated tests — 21 Nov 2026
+| Suite | Where | Result |
+|---|---|---|
+| Backend pytest (Ali): `/log/meals/history` and `/log/workouts` — ordering, totals, date window, empty user, auth | `backend/tests/test_history.py` (run: `.venv\Scripts\python -m pytest -v`) | 9 passed |
+| Android JUnit (Jacqueline): `AuthValidator` login / sign-up / name-split rules | `app/src/test/.../AuthValidatorTest.kt` (run from Android Studio gutter or `gradlew testDebugUnitTest`) | 17 passed (57 s), screenshot in `docs/screenshots/2026-11-21-integration/` |

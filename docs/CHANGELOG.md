@@ -5,6 +5,19 @@ Entries marked (Claude) were written by Claude with Dylan directing and reviewin
 Dylan's laptop (`C:\Users\Dylan.UniLaptop\Documents\Uni\CapstoneProject`) and nothing outside that folder
 was touched. Local-only, git-ignored files that were modified are listed separately.
 
+## 21 Nov 2026 — branch `boss-fixes` (team integration)
+
+| Commit | Change | Files |
+|---|---|---|
+| `cb4c421` (Ali) | History screen (Progress → "View food & workout history"): Food / Workouts tabs, 7/30/90 days; `GET /log/meals/history`; first pytest suite (`backend/tests/`, 9 tests) + `requirements-dev.txt` | `ui/HistoryFragment.kt`, `res/layout/fragment_history.xml`, `nav_graph.xml`, `ProgressFragment.kt`, `backend/app/routers/log.py`, `backend/app/schemas.py`, `backend/tests/*`, `backend/README.md` |
+| `9a99adf` (Jacqueline, cherry-picked from the orphan branch `auth-validator-unit-tests`) | `AuthValidator` (login/sign-up rules, name split) + 17 JUnit tests | `app/.../testing/AuthValidator.kt`, `app/src/test/.../AuthValidatorTest.kt` |
+| `43c5a61` | Moved `AuthValidator.kt` into the `testing/` folder its package declares; Login and Sign-up now call it instead of inline copies of the same rules | `LoginActivity.kt`, `SignupActivity.kt` |
+| (this) | Changelog + test evidence: integrated build OK (3 m 32 s), pytest 9/9, JUnit 17/17 | `docs/CHANGELOG.md`, `docs/screenshots/2026-11-21-integration/` |
+
+Integration done by fast-forwarding `boss-fixes` onto Ali's branch (he had branched from it) and cherry-picking
+Jacqueline's commit (her branch had no shared history, so it could not be merged by PR). All four team members now
+appear in the branch history; PR #5 carries everything.
+
 ## 19 Nov 2026 — branch `boss-fixes` (client feedback round)
 
 | Commit | Change | Files |
