@@ -16,6 +16,8 @@ from ..schemas import (
     DayLogOut,
     DaySummary,
     DayTotals,
+    MealHistoryOut,
+    MealHistoryTotals,
     MealLogIn,
     MealLogOut,
     WeightHistoryOut,
@@ -82,6 +84,34 @@ def day_log(
 ):
     """Everything logged on one day (meals and workouts) plus totals against the profile's calorie target."""
     return day_view(user, db, day or _today())
+
+
+@router.get("/meals/history", response_model=MealHistoryOut)
+def meal_history(
+    days: int = Query(30, ge=1, le=365),
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Meals in the last N days, newest first, with totals: the History screen's Food tab.
+    Mirrors GET /log/workouts (same date window, same ordering) so both history lists behave the same."""
+    start = (date.today() - timedelta(days=days - 1)).isoformat()
+    entries = db.scalars(
+        select(MealLog)
+        .where(MealLog.user_id == user.id, MealLog.date >= start)
+        .order_by(MealLog.date.desc(), MealLog.created_at.desc())
+    ).all()
+    kcal = sum(m.kcal for m in entries)
+    days_logged = len({m.date for m in entries})
+    return MealHistoryOut(
+        entries=entries,
+        totals=MealHistoryTotals(
+            meals=len(entries),
+            kcal=kcal,
+            days_logged=days_logged,
+            avg_kcal_per_logged_day=round(kcal / days_logged) if days_logged else 0,
+        ),
+        days=days,
+    )
 
 
 @router.delete("/meals/{meal_id}", status_code=status.HTTP_204_NO_CONTENT)

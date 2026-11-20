@@ -8,6 +8,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.example.capstoneproject.R
 import com.example.capstoneproject.databinding.FragmentProgressBinding
 import com.example.capstoneproject.network.ApiClient
@@ -45,6 +46,7 @@ class ProgressFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnLogWeight.setOnClickListener { logWeight() }
+        binding.btnOpenHistory.setOnClickListener { findNavController().navigate(R.id.historyFragment) }
         loadAll()
     }
 

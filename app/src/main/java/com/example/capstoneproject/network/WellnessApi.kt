@@ -55,6 +55,10 @@ interface WellnessApi {
     @GET("log/meals")
     suspend fun dayLog(@Query("date") date: String? = null): Response<DayLogOut>
 
+    /** Meals over the last N days, newest first, with totals — History screen, Food tab. */
+    @GET("log/meals/history")
+    suspend fun mealHistory(@Query("days") days: Int = 30): Response<MealHistoryOut>
+
     @DELETE("log/meals/{id}")
     suspend fun deleteMeal(@Path("id") id: String): Response<Unit>
 

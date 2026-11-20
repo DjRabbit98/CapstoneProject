@@ -10,6 +10,16 @@ The server the Android app calls for the AI coach. Python 3.12.
 3. Run `run.py` (green arrow in PyCharm, or `python run.py`).
 4. Open http://localhost:8000/docs to try every endpoint in the browser.
 
+## Automated tests
+
+`tests/` holds pytest tests (currently the History endpoints). They use their own throwaway database, so
+`wellness.db` is never touched. From the `backend` folder:
+
+```
+.venv\Scripts\python -m pip install -r requirements-dev.txt
+.venv\Scripts\python -m pytest -v
+```
+
 ## Connecting the Android app
 
 The app's `ApiClient.BASE_URL` is `http://127.0.0.1:8000/`. On the emulator, open a tunnel once per emulator boot
@@ -37,6 +47,7 @@ same Wi-Fi can use the PC's LAN IP instead — add it to `app/src/main/res/xml/n
 | POST | `/ai/estimate` | kcal + macros for a described meal (`description`, optional `portion`) — the food log's "fill in for me" |
 | GET | `/ai/models` | Models the configured key can use, and which is active |
 | POST / GET | `/log/meals` | Log a meal; get one day's meals **and workouts** with totals, calories burned, net kcal, calorie target and calories remaining (`?date=YYYY-MM-DD`) |
+| GET | `/log/meals/history` | Food history: meals in the last `days` (default 30, max 365), newest first, with totals (meals, kcal, days logged, average kcal per logged day) — History screen, Food tab |
 | DELETE | `/log/meals/{id}` | Remove a logged meal |
 | GET | `/log/summary` | Calories eaten and burned per day for the last `days` (default 7), zero-filled — dashboard / weekly chart |
 | POST / GET | `/log/workouts` | Record a completed session (kcal estimated from MET × weight × time if not given); history for the last `days` (default 7) with totals — Training history / Progress |

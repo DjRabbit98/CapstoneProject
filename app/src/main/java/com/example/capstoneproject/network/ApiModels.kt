@@ -123,6 +123,11 @@ data class WorkoutTotals(val sessions: Int, val minutes: Int, val kcal_burned: I
 
 data class WorkoutHistoryOut(val entries: List<WorkoutLogOut>, val totals: WorkoutTotals, val days: Int)
 
+/** GET /log/meals/history — food history, same shape as WorkoutHistoryOut. */
+data class MealHistoryTotals(val meals: Int, val kcal: Int, val days_logged: Int, val avg_kcal_per_logged_day: Int)
+
+data class MealHistoryOut(val entries: List<MealLogOut>, val totals: MealHistoryTotals, val days: Int)
+
 /** One day, food and training together. calories_remaining = target - eaten + burned. */
 data class DayLogOut(
     val date: String,

@@ -32,6 +32,15 @@
                 android:text="Last 7 days"
                 style="@style/TextCaption" />
 
+            <!-- Opens the History screen (ui/HistoryFragment.kt) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnOpenHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="View food &amp; workout history"
+                style="@style/ButtonStyle.Secondary" />
+
             <!-- Summary tiles -->
             <LinearLayout
                 android:layout_width="match_parent"

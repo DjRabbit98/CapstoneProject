@@ -165,6 +165,20 @@ class WorkoutHistoryOut(BaseModel):
     days: int
 
 
+class MealHistoryTotals(BaseModel):
+    meals: int
+    kcal: int
+    days_logged: int               # days with at least one meal
+    avg_kcal_per_logged_day: int   # kcal / days_logged; days with nothing logged are left out
+
+
+class MealHistoryOut(BaseModel):
+    """Food history for the History screen. Same shape as WorkoutHistoryOut so the app treats both alike."""
+    entries: list[MealLogOut]      # newest first
+    totals: MealHistoryTotals
+    days: int
+
+
 class DayLogOut(BaseModel):
     """One day, food and training together (the dashboard's single source of truth).
     calories_remaining = target - eaten + burned, the usual 'exercise earns calories back' convention."""
