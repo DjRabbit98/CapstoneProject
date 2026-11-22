@@ -11,7 +11,8 @@ PR #5 (`boss-fixes`) was merged by Tiago as `24dca90`; `upstream/main` is identi
 
 | Commit | Change | Files |
 |---|---|---|
-| (this) | This entry only | `docs/CHANGELOG.md` |
+| `02d6024` | 22 Nov health-check entry | `docs/CHANGELOG.md` |
+| (this) | Demo screenshot pass on the emulator (12 shots: Home before/after, pizza/burger/sushi photo verdicts, photo → Training pre-fill → plan, adjusted meal plan, coach, History, Profile) taken with Android Studio's device screenshot tool at 1080×2400, saved as JPEG; `photos/` (Dylan's source food images) git-ignored | `docs/screenshots/2026-11-22-demo/*.jpg`, `.gitignore`, `docs/CHANGELOG.md` |
 
 **Health check 10:20–10:40 (Claude, Dylan watching).** Laptop had been restarted; PyCharm and Android Studio were
 relaunched, the backend started with Run in PyCharm (`Uvicorn running on 127.0.0.1:8000`), the app reinstalled from

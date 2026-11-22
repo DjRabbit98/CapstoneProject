@@ -16,3 +16,6 @@ local.properties
 
 # Claude desktop app download folder
 Claude outputs/
+
+# Local demo source photos (not part of the app)
+photos/
