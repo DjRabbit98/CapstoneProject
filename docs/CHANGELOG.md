@@ -5,6 +5,30 @@ Entries marked (Claude) were written by Claude with Dylan directing and reviewin
 Dylan's laptop (`C:\Users\Dylan.UniLaptop\Documents\Uni\CapstoneProject`) and nothing outside that folder
 was touched. Local-only, git-ignored files that were modified are listed separately.
 
+## 22 Nov 2026 — health check and report drafting (no code changes)
+
+PR #5 (`boss-fixes`) was merged by Tiago as `24dca90`; `upstream/main` is identical to `boss-fixes`.
+
+| Commit | Change | Files |
+|---|---|---|
+| (this) | This entry only | `docs/CHANGELOG.md` |
+
+**Health check 10:20–10:40 (Claude, Dylan watching).** Laptop had been restarted; PyCharm and Android Studio were
+relaunched, the backend started with Run in PyCharm (`Uvicorn running on 127.0.0.1:8000`), the app reinstalled from
+Android Studio. Measured through the browser pane against the local server: `/health` ok, login 0.56 s, `/ai/chat`
+200 in 1.5 s with a 4-line reply citing the user's 2000 kcal target, `/log/summary` returning 7 days. Dashboard on
+the emulator showed live data (3,120 kcal remaining for "Dylan demo 2"). No files in the repo or database changed.
+
+**Emulator freeze — root cause.** Yesterday's hang ("Timed out after 300 seconds waiting for emulator to come
+online", black Running Devices panel, qemu at 1.5 GB with system RAM at 93 %) and this morning's lag were the same
+fault: Android Studio's Quick Boot restores the last snapshot, and the snapshot had been saved while the device was
+frozen. **Fix: Device Manager → ⋮ → Cold Boot**, wait ~60–90 s for the home screen, then Run. Closing the device tab
+in Running Devices shuts the AVD down cleanly. Recorded in the user manual review sent to Ali.
+
+**Documents.** Report sections for §2.1, §2.2, §4.2 (incl. request-path diagram), §6 and §7 drafted as a Claude Doc
+for Jay to paste; review notes for Ali's `User_manual_DRAFT.docx` sent to Dylan to forward. Neither file lives in
+this repository.
+
 ## 21 Nov 2026 — branch `boss-fixes` (team integration)
 
 | Commit | Change | Files |
